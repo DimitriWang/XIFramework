@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+
+namespace XIFramework.Machine
+{
+    public interface IStateMachineOnwer
+    {
+    }
+
+    public class StateMachine
+    {
+        private IStateMachineOnwer _onwer;
+
+        private Dictionary<Type, StateBase> stateDic = new Dictionary<Type, StateBase>();
+
+        public bool hasState => currentState != null;
+
+        public Type CurrentStateType
+        {
+            get { return currentState.GetType(); }
+        }
+
+        private StateBase currentState;
+
+        /// <summary>
+        /// 初始化 状态机
+        /// </summary>
+        /// <param name="onwer"></param>
+        public void Init(IStateMachineOnwer onwer)
+        {
+            this._onwer = onwer;
+        }
+
+        /// <summary>
+        /// 切换状态
+        /// </summary>
+        /// <param name="refresh">状态不变时，刷新条件参数</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool ChangeState<T>(bool refresh = false) where T : StateBase, new()
+        {
+            if (currentState != null && CurrentStateType == typeof(T) && !refresh) return false;
+
+            if (currentState != null)
+            {
+                currentState.Exit();
+                MonoManager.Instance.RemoveUpdateAction(currentState.Update);
+                MonoManager.Instance.RemoveFixedUpdateAction(currentState.FixedUpdate);
+                MonoManager.Instance.RemoveLateUpdateAction(currentState.LateUpdate);
+            }
+
+            currentState = GetState<T>();
+            currentState.Enter();
+            MonoManager.Instance.AddUpdateAction(currentState.Update);
+            MonoManager.Instance.AddFixedUpdateAction(currentState.FixedUpdate);
+            MonoManager.Instance.AddLateUpdateAction(currentState.LateUpdate);
+
+            return true;
+        }
+
+        private StateBase GetState<T>() where T : StateBase, new()
+        {
+            Type stateType = typeof(T);
+            if (!stateDic.TryGetValue(stateType, out StateBase state))
+            {
+                state = new T();
+                state.Init(_onwer);
+                stateDic.Add(stateType, state);
+            }
+
+            return state;
+        }
+
+        public void Stop()
+        {
+            if (hasState)
+            {
+                currentState.Exit();
+                MonoManager.Instance.RemoveUpdateAction(currentState.Update);
+                MonoManager.Instance.RemoveFixedUpdateAction(currentState.FixedUpdate);
+                MonoManager.Instance.RemoveLateUpdateAction(currentState.LateUpdate);
+            }
+
+            foreach (var state in stateDic)
+            {
+                var iterState = state.Value;
+                iterState.DeInit();
+            }
+
+            stateDic.Clear();
+
+            currentState = null;
+        }
+    }
+}
