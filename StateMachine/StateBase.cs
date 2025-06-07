@@ -12,9 +12,9 @@ namespace XIFramework.Machine
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="onwer">宿主</param>
+        /// <param name="owner">宿主</param>
         /// <param name="stateType">当前状态代表的实际枚举的int直</param>
-        public virtual void Init(IStateMachineOnwer onwer)
+        public virtual void Init(IStateMachineOwner owner)
         {
         }
 

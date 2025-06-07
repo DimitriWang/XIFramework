@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace XIFramework.Machine
 {
-    public interface IStateMachineOnwer
+    public interface IStateMachineOwner
     {
     }
 
     public class StateMachine
     {
-        private IStateMachineOnwer _onwer;
+        private IStateMachineOwner _owner;
 
         private Dictionary<Type, StateBase> stateDic = new Dictionary<Type, StateBase>();
 
@@ -25,10 +25,10 @@ namespace XIFramework.Machine
         /// <summary>
         /// 初始化 状态机
         /// </summary>
-        /// <param name="onwer"></param>
-        public void Init(IStateMachineOnwer onwer)
+        /// <param name="owner"></param>
+        public void Init(IStateMachineOwner owner)
         {
-            this._onwer = onwer;
+            this._owner = owner;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace XIFramework.Machine
             if (!stateDic.TryGetValue(stateType, out StateBase state))
             {
                 state = new T();
-                state.Init(_onwer);
+                state.Init(_owner);
                 stateDic.Add(stateType, state);
             }
 
