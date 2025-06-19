@@ -2,7 +2,8 @@
     "name": "XIFramework.Plugins",
     "rootNamespace": "",
     "references": [
-        "GUID:df8964a1f4a919c45937b7f9b4633d16"
+        "GUID:df8964a1f4a919c45937b7f9b4633d16",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
