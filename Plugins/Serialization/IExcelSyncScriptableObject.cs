@@ -1,11 +1,4 @@
-///=====================================================
-/// - FileName:      IExcelSyncScriptableObject.cs
-/// - NameSpace:     YukiFrameWork.Machine
-/// - Description:   高级定制脚本生成
-/// - Creation Time: 2025/3/10 7:35:00
-/// -  (C) Copyright 2008 - 2025
-/// -  All Rights Reserved.
-///=====================================================
+
 using XIFramework;
 using UnityEngine;
 using System;

@@ -1,11 +1,4 @@
-﻿///=====================================================
-/// - FileName:      JsonExporter.cs
-/// - NameSpace:     YukiFrameWork.Example
-/// - Description:   Excel-Json解析器
-/// - Creation Time: 2024/4/11 19:00:01
-/// -  (C) Copyright 2008 - 2024
-/// -  All Rights Reserved.
-///=====================================================
+﻿
 using System;
 using System.Collections.Generic;
 using System.Data;

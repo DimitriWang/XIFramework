@@ -1,11 +1,4 @@
-﻿///=====================================================
-/// - FileName:      ExcelLoader.cs
-/// - NameSpace:     YukiFrameWork
-/// - Description:   Excel加载器
-/// - Creation Time: 2024/4/11 19:05:45
-/// -  (C) Copyright 2008 - 2024
-/// -  All Rights Reserved.
-///=====================================================
+﻿
 using System;
 using System.Data;
 using System.IO;
