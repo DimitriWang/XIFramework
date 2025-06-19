@@ -23,7 +23,7 @@ namespace XIFramework
         
     }
     
-    public partial class MonoManager : SingletonMono<MonoManager>
+    public partial class MonoHelper : SingletonMono<MonoHelper>
     {
         private event Action updateAction;
         private event Action lateUpdateAction;

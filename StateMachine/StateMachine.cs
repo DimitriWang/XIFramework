@@ -44,16 +44,16 @@ namespace XIFramework.Machine
             if (currentState != null)
             {
                 currentState.Exit();
-                MonoManager.Instance.RemoveUpdateAction(currentState.Update);
-                MonoManager.Instance.RemoveFixedUpdateAction(currentState.FixedUpdate);
-                MonoManager.Instance.RemoveLateUpdateAction(currentState.LateUpdate);
+                MonoHelper.Instance.RemoveUpdateAction(currentState.Update);
+                MonoHelper.Instance.RemoveFixedUpdateAction(currentState.FixedUpdate);
+                MonoHelper.Instance.RemoveLateUpdateAction(currentState.LateUpdate);
             }
 
             currentState = GetState<T>();
             currentState.Enter();
-            MonoManager.Instance.AddUpdateAction(currentState.Update);
-            MonoManager.Instance.AddFixedUpdateAction(currentState.FixedUpdate);
-            MonoManager.Instance.AddLateUpdateAction(currentState.LateUpdate);
+            MonoHelper.Instance.AddUpdateAction(currentState.Update);
+            MonoHelper.Instance.AddFixedUpdateAction(currentState.FixedUpdate);
+            MonoHelper.Instance.AddLateUpdateAction(currentState.LateUpdate);
 
             return true;
         }
@@ -76,9 +76,9 @@ namespace XIFramework.Machine
             if (hasState)
             {
                 currentState.Exit();
-                MonoManager.Instance.RemoveUpdateAction(currentState.Update);
-                MonoManager.Instance.RemoveFixedUpdateAction(currentState.FixedUpdate);
-                MonoManager.Instance.RemoveLateUpdateAction(currentState.LateUpdate);
+                MonoHelper.Instance.RemoveUpdateAction(currentState.Update);
+                MonoHelper.Instance.RemoveFixedUpdateAction(currentState.FixedUpdate);
+                MonoHelper.Instance.RemoveLateUpdateAction(currentState.LateUpdate);
             }
 
             foreach (var state in stateDic)

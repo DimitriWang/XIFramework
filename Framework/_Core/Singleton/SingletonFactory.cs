@@ -157,7 +157,7 @@ namespace XIFramework
 
             instance.OnSingletonInit();
             return instance;
-        }
+        }                           
 
         /// <summary>
         /// 在GameObject上创建T组件（脚本）
@@ -179,6 +179,27 @@ namespace XIFramework
             }
 
             return obj.AddComponent(typeof(T)) as T;
+        }
+        
+        
+        public static T CreateScriptableObjectSingleton<T>() where T : ScriptableObject, ISingleton
+        {
+            return CreateScriptableConstructorObject<T>();           
+        }
+
+        public static object CreateScriptableObjectSingleton(Type type)
+        {
+            return CreateScriptableConstructorObject(type);
+        }
+
+        private static T CreateScriptableConstructorObject<T>() where T : ScriptableObject, ISingleton
+        {
+            return CreateScriptableConstructorObject(typeof(T)) as T;
+        }
+
+        private static ISingleton CreateScriptableConstructorObject(Type type)
+        {
+            return ScriptableObject.CreateInstance(type) as ISingleton;
         }
 
         /// <summary>
