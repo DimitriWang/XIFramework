@@ -7,19 +7,11 @@ namespace XIFramework
     {
         public static readonly string Level = "level";
         public static readonly string LevelLiving = "level_living";
-
         public static readonly string LevelDead = "level_dead";
-
-        //
         public static readonly string FadeOut = "FadeOut";
-
-        //
         public static readonly string LOD = "LOD_";
         public static readonly string LOD_HEIGHT = "LOD_H";
-
         public static readonly string LOD_LOW = "LOD_L";
-
-        //
         public static readonly string BODY_LOW = "BodyLow";
     }
 
@@ -39,8 +31,7 @@ namespace XIFramework
         Scene,
         Effect,
         HUD,
-
-        //
+        
         SceneCameraMask = (1 << Default) | (1 << TransparentFx) | (1 << Water) | (1 << Entity) | (1 << Scene) |
                           (1 << Effect),
         SceneLightMask = (1 << Default) | (1 << Entity) | (1 << Scene),
@@ -51,14 +42,12 @@ namespace XIFramework
         where T : Component
     {
         public static readonly List<T> List = new List<T>();
-
-        //
+        
         public static void Begin(GameObject obj)
         {
             Begin(obj, false);
         }
-
-        //
+        
         public static void Begin(GameObject obj, bool includeInactive)
         {
             List.Clear();
@@ -67,8 +56,7 @@ namespace XIFramework
                 obj.GetComponentsInChildren<T>(includeInactive, List);
             }
         }
-
-        //
+        
         public static void End()
         {
             List.Clear();
@@ -206,8 +194,8 @@ namespace XIFramework
             selfObj.name = name;
             return selfObj;
         }
-
-        public static void DestroyRef(ref UnityEngine.Object obj)
+        
+        public static void Destroy(ref UnityEngine.Object obj)
         {
             if (obj == null)
             {
@@ -224,6 +212,34 @@ namespace XIFramework
 
             UnityEngine.Object.Destroy(obj);
             obj = null;
+        }
+        
+        public static void Destroy(ref UnityEngine.GameObject obj)
+        {
+            if (obj == null)
+            {
+                return;
+            }
+            obj.transform.SetParent(null, false);
+            obj.SetActive(false);
+            UnityEngine.Object.Destroy(obj);
+            obj = null;
+        }
+        
+        
+        //
+        public static void Destroy(List<UnityEngine.Object> objList)
+        {
+            if (objList == null)
+            {
+                return;
+            }
+            for (int iter = 0, end = objList.Count; iter < end; ++iter)
+            {
+                UnityEngine.Object iterObj = objList[iter];
+                Destroy(ref iterObj);
+            }
+            objList.Clear();
         }
 
 
