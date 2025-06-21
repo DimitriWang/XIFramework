@@ -14,7 +14,7 @@ public partial class XIGameInstance : MonoBehaviour
     private static XIGameInstance _instance;
     public static XIGameInstance Instance => _instance;
     
-    private XIFrameworkContainer _xiFramework;
+    private XIFrameworkContainer _framework;
     private XISubSystemManager _subsystemManager;
     private XIGameFeatureManager _featureManager;
     
@@ -35,19 +35,19 @@ public partial class XIGameInstance : MonoBehaviour
     public async UniTask Initialize()
     {
         // 初始化框架容器
-        _xiFramework = new XIFrameworkContainer();
+        _framework = new XIFrameworkContainer();
         
         // 注册核心系统
-        _xiFramework.Register<IArchitectureContainer>(_xiFramework);
-        _xiFramework.Register(this);
+        _framework.Register<IArchitectureContainer>(_framework);
+        _framework.Register(this);
         
         // 初始化子系统管理器
-        _subsystemManager = new XISubSystemManager(_xiFramework);
-        _xiFramework.Register(_subsystemManager);
+        _subsystemManager = new XISubSystemManager(_framework);
+        _framework.Register(_subsystemManager);
         
         // 初始化GameFeature管理器
-        _featureManager = new XIGameFeatureManager(_xiFramework);
-        _xiFramework.Register(_featureManager);
+        _featureManager = new XIGameFeatureManager(_framework);
+        _framework.Register(_featureManager);
         
         // 执行自定义初始化流程
         await CustomInitialize();
