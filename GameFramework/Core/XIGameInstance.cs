@@ -25,6 +25,12 @@ namespace XIFramework.GameFramework
             _instance = this;
             DontDestroyOnLoad(gameObject);
         }
+        
+        private void Update()
+        {
+            _subsystemManager.UpdateSubSystems(Time.deltaTime);
+            _featureManager.UpdateFeatures(Time.deltaTime);
+        }
         public async UniTask Initialize()
         {
             // 初始化框架容器
@@ -45,6 +51,7 @@ namespace XIFramework.GameFramework
             // 执行自定义初始化流程
             await CustomInitialize();
         }
+        
         protected virtual async UniTask CustomInitialize()
         {
             // 默认初始化核心子系统
@@ -75,8 +82,13 @@ namespace XIFramework.GameFramework
                 _subsystemManager.RegisterSubSystem(type);
             }
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
         protected virtual void LoadCoreFeatures()
         {
+            //此种实现作用于直接挂载到物体上，自动创建出的GameInstance 或者 走配置的GameInstace需要额外进行实现 后续GameInstace 可作为配置类的方式实现
             foreach (var feature in _coreFeatures)
             {
                 _featureManager.LoadFeature(feature);

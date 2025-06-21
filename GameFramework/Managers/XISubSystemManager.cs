@@ -7,6 +7,7 @@ namespace XIFramework.GameFramework
     public class XISubSystemManager
     {
         private readonly Dictionary<Type, XIGameSubSystem> _subsystems = new();
+        private readonly List<XIGameSubSystem> _subSystemList = new();
         private readonly XIFrameworkContainer _framework;
         public XISubSystemManager(XIFrameworkContainer framework)
         {
@@ -21,6 +22,7 @@ namespace XIFramework.GameFramework
             var subsystem = (XIGameSubSystem)Activator.CreateInstance(subsystemType);
             _framework.Inject(subsystem);
             _subsystems[subsystemType] = subsystem;
+            _subSystemList.Add(subsystem);
         }
         public void RegisterSubSystem<T>() where T : XIGameSubSystem
         {
@@ -58,6 +60,13 @@ namespace XIFramework.GameFramework
         public T GetSubsystem<T>() where T : XIGameSubSystem
         {
             return _subsystems.TryGetValue(typeof(T), out var subsystem) ? (T)subsystem : null;
+        }
+        public void UpdateSubSystems(float deltaTime)
+        {
+            foreach (var subSystem in _subSystemList)
+            {
+                subSystem?.Update(deltaTime);
+            }
         }
     }
 }

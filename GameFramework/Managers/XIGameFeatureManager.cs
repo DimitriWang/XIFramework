@@ -57,11 +57,11 @@ namespace XIFramework.GameFramework
             _features.Clear();
         }
     
-        public void UpdateFeatures()
+        public void UpdateFeatures(float deltaTime)
         {
             foreach (var feature in _features)
             {
-                feature.Update();
+                feature.UpdateFeature(deltaTime);
             }
         }
     }

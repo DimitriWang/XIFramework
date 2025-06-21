@@ -7,7 +7,7 @@ namespace XIFramework.GameFramework
     {
         
         public virtual void Initialize() { }
-        public virtual void Update() { }
+        public virtual void UpdateFeature(float deltaTime) { }
         public virtual void Shutdown() { }
     
         protected T GetSubsystem<T>() where T : XIGameSubSystem => 

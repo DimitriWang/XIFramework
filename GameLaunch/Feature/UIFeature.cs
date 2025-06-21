@@ -12,7 +12,7 @@ namespace XIFramework.GameLaunch
             
             RegisterSubsystem<UISubsystem>();
         }
-        public override void Update()
+        public override void UpdateFeature(float deltaTime)
         {
         }
         public override void Shutdown()
