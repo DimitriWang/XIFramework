@@ -8,19 +8,26 @@ namespace XIFramework.GameLaunch
     
     public class GameBootstrap : MonoBehaviour
     {
-        private async UniTask Start()
+        private void Start()
         {
-           // 创建GameInstance
-           var gameInstance = new GameObject("GameInstance").AddComponent<XIGameInstance>();
+            AsyncStart().Forget();
+        }
+
+        public async UniTask AsyncStart()
+        {
+            
+            // 创建GameInstance
+            var gameInstance = XIGameInstance.Instance;
+
+            // 添加自定义初始化系统
+            //XIGameFramework.AddPreInitSystem<DatabasePreInitSystem>();
+            // XIGameFramework.AddPostInitSystem<AnalyticsPostInitSystem>();
         
-           // 添加自定义初始化系统
-           //XIGameFramework.AddPreInitSystem<DatabasePreInitSystem>();
-          // XIGameFramework.AddPostInitSystem<AnalyticsPostInitSystem>();
-        
-           // 初始化框架
-           await XIGameFramework.Initialize(gameInstance);
-        
-           // 框架初始化完成，开始游戏逻辑
+            // 初始化框架
+            await XIGameFramework.Initialize(gameInstance);
+            
+            // 框架初始化完成，开始游戏逻辑
+            
         }
     }
 }

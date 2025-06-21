@@ -7,29 +7,39 @@ using Cysharp.Threading.Tasks;
 
 namespace XIFramework.GameFramework
 {
-    public partial class XIGameInstance : MonoBehaviour
+    public partial class XIGameInstance : SingletonMono<XIGameInstance>
     {
-        private static XIGameInstance _instance;
-        public static XIGameInstance Instance => _instance;
+        // private static XIGameInstance _instance;
+        // public static XIGameInstance Instance => _instance;
         private XIFrameworkContainer _framework;
         private XISubSystemManager _subsystemManager;
         private XIGameFeatureManager _featureManager;
         [SerializeField] protected List<XIGameFeature> _coreFeatures = new();
-        protected virtual void Awake()
+        // protected virtual void Awake()
+        // {
+        //     if (_instance != null && _instance != this)
+        //     {
+        //         Destroy(gameObject);
+        //         return;
+        //     }
+        //     _instance = this;
+        //     DontDestroyOnLoad(gameObject);
+        // }
+
+        public void Update0(float deltaTime)
         {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
+            
         }
-        
-        private void Update()
+
+        public void Update1(float deltaTime)
         {
-            _subsystemManager.UpdateSubSystems(Time.deltaTime);
-            _featureManager.UpdateFeatures(Time.deltaTime);
+            _subsystemManager?.UpdateSubSystems(Time.deltaTime);
+            _featureManager?.UpdateFeatures(Time.deltaTime);
+        }
+
+        public void Update2(float deltaTime)
+        {
+            
         }
         public async UniTask Initialize()
         {
@@ -79,6 +89,7 @@ namespace XIFramework.GameFramework
             var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).Where(t => t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
             foreach (var type in subsystemTypes)
             {
+                Debug.Log("AutoCreateSubsystem:"  + type.Name);
                 _subsystemManager.RegisterSubSystem(type);
             }
         }
@@ -91,6 +102,7 @@ namespace XIFramework.GameFramework
             //此种实现作用于直接挂载到物体上，自动创建出的GameInstance 或者 走配置的GameInstace需要额外进行实现 后续GameInstace 可作为配置类的方式实现
             foreach (var feature in _coreFeatures)
             {
+                Debug.Log("LoadCoreFeature:"  + feature.GetType().Name);
                 _featureManager.LoadFeature(feature);
             }
         }

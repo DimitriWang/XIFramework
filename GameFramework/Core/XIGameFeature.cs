@@ -15,6 +15,7 @@ namespace XIFramework.GameFramework
     
         protected void RegisterSubsystem<T>() where T : XIGameSubSystem
         {
+            Debug.Log("XIGameFeature.RegisterSubsystem:" + typeof(T).Name);
             XIGameInstance.Instance.RegisterSubSystem(typeof(T));
         }
     }

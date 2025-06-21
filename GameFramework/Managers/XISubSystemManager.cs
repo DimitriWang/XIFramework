@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace XIFramework.GameFramework
 {
@@ -18,7 +19,10 @@ namespace XIFramework.GameFramework
             if (!typeof(XIGameSubSystem).IsAssignableFrom(subsystemType))
                 throw new ArgumentException($"Type {subsystemType} is not a GameSubSystem");
             if (_subsystems.ContainsKey(subsystemType))
+            {
+                Debug.LogWarning($"{subsystemType} already registered");
                 return;
+            }
             var subsystem = (XIGameSubSystem)Activator.CreateInstance(subsystemType);
             _framework.Inject(subsystem);
             _subsystems[subsystemType] = subsystem;
@@ -30,7 +34,8 @@ namespace XIFramework.GameFramework
         }
         public async UniTask InitializeAll()
         {
-            foreach (var subsystem in _subsystems.Values)
+            await UniTask.CompletedTask;
+            foreach (var subsystem in _subSystemList)
             {
                 if (subsystem is IAsyncInitialization asyncSubsystem)
                 {

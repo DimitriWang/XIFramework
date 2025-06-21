@@ -28,6 +28,7 @@ namespace XIFramework.GameFramework
     
         public async UniTask InitializeAll()
         {
+            await UniTask.CompletedTask;
             foreach (var feature in _features)
             {
                 if (feature is IAsyncInitialization asyncFeature)
@@ -36,6 +37,7 @@ namespace XIFramework.GameFramework
                 }
                 else
                 {
+                    await UniTask.CompletedTask;
                     feature.Initialize();
                 }
             }

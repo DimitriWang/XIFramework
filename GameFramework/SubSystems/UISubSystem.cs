@@ -16,7 +16,6 @@ public class UISubsystem : XIGameSubSystem
         // 创建UI根节点
         _uiRoot = new GameObject("UIRoot").transform;
         _uiRoot.SetParent(XIGameInstance.Instance.transform);
-        Object.DontDestroyOnLoad(_uiRoot.gameObject);
         
         // 添加Canvas
         var canvas = _uiRoot.gameObject.AddComponent<Canvas>();

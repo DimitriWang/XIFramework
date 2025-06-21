@@ -19,6 +19,7 @@ namespace XIFramework.GameFramework
         }
         public async UniTask<AssetHandle> LoadAssetAsync<T>(string assetPath) where T : Object
         {
+            await UniTask.CompletedTask;
             if (!_loadedAssets.TryGetValue(assetPath, out var asset))
             {
                 var asyncOp = Resources.LoadAsync<T>(assetPath);
