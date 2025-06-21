@@ -7,11 +7,11 @@ namespace XIFramework.GameFramework
     public class XIGameFeatureManager
     {
         private readonly List<XIGameFeature> _features = new();
-        private readonly XIFrameworkContainer _xiFramework;
+        private readonly XIFrameworkContainer _framework;
     
         public XIGameFeatureManager(XIFrameworkContainer xiFramework)
         {
-            _xiFramework = xiFramework;
+            _framework = xiFramework;
         }
     
         public void LoadFeature<T>() where T : XIGameFeature, new()
@@ -22,7 +22,7 @@ namespace XIFramework.GameFramework
     
         public void LoadFeature(XIGameFeature feature)
         {
-            _xiFramework.Inject(feature);
+            _framework.Inject(feature);
             _features.Add(feature);
         }
     
@@ -57,11 +57,11 @@ namespace XIFramework.GameFramework
             _features.Clear();
         }
     
-        public void UpdateFeatures(float deltaTime)
+        public void UpdateFeatures()
         {
             foreach (var feature in _features)
             {
-                feature.Update(deltaTime);
+                feature.Update();
             }
         }
     }

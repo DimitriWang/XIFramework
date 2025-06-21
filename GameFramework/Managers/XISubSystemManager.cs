@@ -8,9 +8,9 @@ namespace XIFramework.GameFramework
     {
         private readonly Dictionary<Type, XIGameSubSystem> _subsystems = new();
         private readonly XIFrameworkContainer _framework;
-        public XISubSystemManager(XIFrameworkContainer xiFramework)
+        public XISubSystemManager(XIFrameworkContainer framework)
         {
-            _framework = xiFramework;
+            _framework = framework;
         }
         public void RegisterSubSystem(Type subsystemType)
         {

@@ -5,6 +5,7 @@ using XIFramework.GameFramework;
 
 namespace XIFramework.GameLaunch
 {
+    
     public class GameBootstrap : MonoBehaviour
     {
         private async UniTask Start()
