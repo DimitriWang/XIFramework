@@ -15,7 +15,7 @@ namespace XIFramework.GameFramework
             ShuttingDown
         }
         private static FrameworkStatus _status = FrameworkStatus.NotInitialized;
-        private static XIGameInstance _xiGameInstance;
+        private static XIGameInstance _gameInstance;
         private static readonly List<Type> _preInitSystems = new();
         private static readonly List<Type> _postInitSystems = new();
         public static FrameworkStatus Status => _status;
@@ -24,13 +24,13 @@ namespace XIFramework.GameFramework
             if (_status != FrameworkStatus.NotInitialized)
                 throw new InvalidOperationException("Framework already initialized");
             _status = FrameworkStatus.Initializing;
-            _xiGameInstance = xiGameInstance;
+            _gameInstance = xiGameInstance;
 
             // 执行预初始化系统
             await RunInitializationSystems(_preInitSystems);
 
             // 初始化游戏实例
-            await _xiGameInstance.Initialize();
+            await _gameInstance.Initialize();
 
             // 执行后初始化系统
             await RunInitializationSystems(_postInitSystems);
@@ -61,9 +61,9 @@ namespace XIFramework.GameFramework
         }
         public static T GetSystem<T>() where T : XIGameSubSystem
         {
-            if (_xiGameInstance == null)
+            if (_gameInstance == null)
                 throw new InvalidOperationException("GameInstance not initialized");
-            return _xiGameInstance.GetSubsystem<T>();
+            return _gameInstance.GetSubsystem<T>();
         }
         public static async UniTask Shutdown()
         {
@@ -73,8 +73,8 @@ namespace XIFramework.GameFramework
 
             // 发送框架关闭事件
             SendEvent(new FrameworkShutdownEvent());
-            await _xiGameInstance.Shutdown();
-            _xiGameInstance = null;
+            await _gameInstance.Shutdown();
+            _gameInstance = null;
             _status = FrameworkStatus.NotInitialized;
         }
 
