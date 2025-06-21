@@ -1,12 +1,15 @@
 {
-    "name": "XIFramework.Plugins",
+    "name": "XIFramework.GameLaunch",
     "rootNamespace": "",
     "references": [
-        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:e34a5702dd353724aa315fb8011f08c3",
+        "GUID:df8964a1f4a919c45937b7f9b4633d16",
+        "GUID:f7a8dd052863d3d4eb2c5e18c60aec70"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

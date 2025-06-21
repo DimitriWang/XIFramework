@@ -1,0 +1,20 @@
+{
+    "name": "XIFramework.GameFramework",
+    "rootNamespace": "",
+    "references": [
+        "GUID:df8964a1f4a919c45937b7f9b4633d16",
+        "GUID:6c9d0d2aa112a1f49a6ce2d00e91db14",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:e34a5702dd353724aa315fb8011f08c3",
+        "GUID:d13ef6132d8e6c04386473ca000233c3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

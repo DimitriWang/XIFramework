@@ -5,6 +5,5 @@ using UnityEngine;
 //待实现
 namespace XIFramework
 {
-    
 }
 
