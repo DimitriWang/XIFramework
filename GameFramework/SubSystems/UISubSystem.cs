@@ -13,6 +13,7 @@ public class UISubsystem : XIGameSubSystem
     
     public override void Initialize()
     {
+        Debug.Log("1");
         // 创建UI根节点
         _uiRoot = new GameObject("UIRoot").transform;
         _uiRoot.SetParent(XIGameInstance.Instance.transform);
@@ -20,8 +21,8 @@ public class UISubsystem : XIGameSubSystem
         // 添加Canvas
         var canvas = _uiRoot.gameObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        _uiRoot.gameObject.AddComponent<UnityEngine.UI.CanvasScaler>();
-        _uiRoot.gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+       // _uiRoot.gameObject.AddComponent<UnityEngine.UI.CanvasScaler>();
+       // _uiRoot.gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
     }
     
     public T OpenPanel<T>(object data = null) where T : UIPanel
