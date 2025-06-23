@@ -15,10 +15,15 @@ MonoBehaviour:
   defaultWorldSettings:
     sceneName: MainScene
     isPersistent: 0
+  _defaultGameMode:
+    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameMode, XIFramework.GameFramework,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   _defaultGameInstanceType:
-    _assemblyQualifiedName: 
+    _assemblyQualifiedName: XIFramework.GameFramework.GameInstance, XIFramework.GameFramework,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   _fallbackGameInstanceType:
-    _assemblyQualifiedName: 
+    _assemblyQualifiedName: XIFramework.GameFramework.TestGameInstance, XIFramework.GameFramework,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   maxPlayers: 4
   enableNetworking: 0
   defaultServerAddress: 127.0.0.1

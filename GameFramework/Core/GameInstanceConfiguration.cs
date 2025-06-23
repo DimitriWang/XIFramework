@@ -19,14 +19,14 @@ namespace XIFramework.GameFramework
         
         [Header("Core Systems")]
         [SerializeField]
-        [TypeConstraint(typeof(GameInstance), IncludeEditorAssemblies = false)]
+        [TypeConstraint(typeof(XIGameInstance), IncludeEditorAssemblies = false)]
         private TypeReference _defaultGameInstanceType;
     
         public System.Type DefaultGameInstanceType => _defaultGameInstanceType.Type;
     
         [Space]
         [SerializeField]
-        [TypeConstraint(typeof(GameInstance), AllowAbstract = false, IncludeEditorAssemblies = false)]
+        [TypeConstraint(typeof(XIGameInstance), AllowAbstract = false, IncludeEditorAssemblies = false)]
         private TypeReference _fallbackGameInstanceType;
     
         public System.Type FallbackGameInstanceType => _fallbackGameInstanceType.Type;
