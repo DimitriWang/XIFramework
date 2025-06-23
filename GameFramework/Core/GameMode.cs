@@ -2,13 +2,14 @@
 
 namespace XIFramework.GameFramework
 {
-    public class GameMode
+    public abstract class GameMode
     {
         public virtual void StartGame()
         {
             
         }
     }
+    
     
     // 默认GameMode实现
     [Serializable]

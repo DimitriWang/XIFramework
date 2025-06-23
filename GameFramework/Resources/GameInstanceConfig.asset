@@ -15,6 +15,10 @@ MonoBehaviour:
   defaultWorldSettings:
     sceneName: MainScene
     isPersistent: 0
+  _defaultGameInstanceType:
+    _assemblyQualifiedName: 
+  _fallbackGameInstanceType:
+    _assemblyQualifiedName: 
   maxPlayers: 4
   enableNetworking: 0
   defaultServerAddress: 127.0.0.1

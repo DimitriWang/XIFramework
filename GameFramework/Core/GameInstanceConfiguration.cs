@@ -8,10 +8,29 @@ namespace XIFramework.GameFramework
     {
         [Header("World Settings")]
         public XIWorldSettings defaultWorldSettings;
+
+        [Header("Game Mode")] 
+        [SerializeField] 
+        [TypeConstraint(typeof(GameMode), IncludeEditorAssemblies = false)]
+        public TypeReference _defaultGameMode;
+
+        public System.Type DefaultGameMode => _defaultGameMode.Type;
+        
+        
+        [Header("Core Systems")]
+        [SerializeField]
+        [TypeConstraint(typeof(GameInstance), IncludeEditorAssemblies = false)]
+        private TypeReference _defaultGameInstanceType;
     
-        [Header("Game Mode")]
-        public System.Type defaultGameMode = typeof(DefaultGameMode);
+        public System.Type DefaultGameInstanceType => _defaultGameInstanceType.Type;
     
+        [Space]
+        [SerializeField]
+        [TypeConstraint(typeof(GameInstance), AllowAbstract = false, IncludeEditorAssemblies = false)]
+        private TypeReference _fallbackGameInstanceType;
+    
+        public System.Type FallbackGameInstanceType => _fallbackGameInstanceType.Type;
+        
         [Header("Player")]
       //  public System.Type defaultPlayerController = typeof(PlayerController);
         public int maxPlayers = 4;
@@ -23,10 +42,10 @@ namespace XIFramework.GameFramework
     
         private void OnValidate()
         {
-            if (!typeof(GameMode).IsAssignableFrom(defaultGameMode))
+            if (!typeof(GameMode).IsAssignableFrom(_defaultGameMode))
             {
-                Debug.LogError("defaultGameMode must be a subclass of GameMode");
-                defaultGameMode = typeof(DefaultGameMode);
+                Debug.LogError("defaultGameMode 属性 不继承自GameMode 自动变更为DefaultGameMode");
+                _defaultGameMode = typeof(DefaultGameMode);
             }
         
             // if (!typeof(PlayerController).IsAssignableFrom(defaultPlayerController))

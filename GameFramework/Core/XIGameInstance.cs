@@ -57,7 +57,7 @@ namespace XIFramework.GameFramework
         {
             var config = ScriptableObject.CreateInstance<GameInstanceConfiguration>();
             config.name = "DefaultGameInstanceConfig";
-            config.defaultGameMode = typeof(DefaultGameMode);
+            config._defaultGameMode = typeof(DefaultGameMode);
             return config;
         }
         private void InitializeGlobalSubsystems()
@@ -81,6 +81,7 @@ namespace XIFramework.GameFramework
         // }
         public async UniTask InitializeWorldContext(string contextName, XIWorldSettings settings = null)
         {
+            await UniTask.CompletedTask;
             // if (_worldContexts.ContainsKey(contextName)) return;
             //
             // var context = new WorldContext(contextName, this, settings);
@@ -130,4 +131,14 @@ namespace XIFramework.GameFramework
     }
 
 // 扩展GameInstance类 (partial实现)
+
+    public class GameInstance : XIGameInstance
+    {
+        
+    }
+
+    public class TestGameInstance : XIGameInstance
+    {
+        
+    }
 }
