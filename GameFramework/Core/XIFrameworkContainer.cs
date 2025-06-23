@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace XIFramework.GameFramework
 {
-    public interface IArchitectureContainer
+    public interface IXIFrameworkContainer
     {
         void Register<T>(T instance) where T : class;
         void Register<TInterface, TImplementation>() where TImplementation : TInterface;
@@ -13,7 +13,7 @@ namespace XIFramework.GameFramework
         bool TryGet<T>(out T instance) where T : class;
         void Inject(object obj);
     }
-    public class XIFrameworkContainer : IArchitectureContainer
+    public class XIFrameworkContainer : IXIFrameworkContainer
     {
         private readonly Dictionary<Type, object> _instances = new();
         private readonly Dictionary<Type, Type> _interfaceMappings = new();

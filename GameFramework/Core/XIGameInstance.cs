@@ -47,7 +47,7 @@ namespace XIFramework.GameFramework
             _framework = new XIFrameworkContainer();
 
             // 注册核心系统
-            _framework.Register<IArchitectureContainer>(_framework);
+            _framework.Register<IXIFrameworkContainer>(_framework);
             _framework.Register(this);
 
             // 初始化子系统管理器

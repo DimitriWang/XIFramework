@@ -15,7 +15,7 @@ namespace XIFramework.GameFramework
         public virtual LifecycleType Lifecycle => LifecycleType.Scene;
     
         [Inject]
-        protected IArchitectureContainer Framework { get; set; }
+        protected IXIFrameworkContainer Framework { get; set; }
     
         public virtual void Initialize() { }
         public virtual void Update(float deltaTime) { }
