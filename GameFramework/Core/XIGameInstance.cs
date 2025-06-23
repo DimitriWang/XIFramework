@@ -7,122 +7,135 @@ using Cysharp.Threading.Tasks;
 
 namespace XIFramework.GameFramework
 {
-    public partial class XIGameInstance : SingletonMono<XIGameInstance>
+    public interface IConfigurable
     {
-        // private static XIGameInstance _instance;
-        // public static XIGameInstance Instance => _instance;
-        private XIFrameworkContainer _framework;
-        private XISubSystemManager _subsystemManager;
-        private XIGameFeatureManager _featureManager;
-        [SerializeField] protected List<XIGameFeature> _coreFeatures = new();
-        // protected virtual void Awake()
-        // {
-        //     if (_instance != null && _instance != this)
-        //     {
-        //         Destroy(gameObject);
-        //         return;
-        //     }
-        //     _instance = this;
-        //     DontDestroyOnLoad(gameObject);
-        // }
-
-        public void Update0(float deltaTime)
+        void LoadConfiguration();
+    }
+    
+    public abstract class XIGameInstance : MonoBehaviour, IConfigurable
+    {
+    [SerializeField] private GameInstanceConfiguration _configuration;
+    
+  //  private readonly Dictionary<string, WorldContext> _worldContexts = new();
+    private XIWorldContext _activeWorldContext;
+    private IXIFrameworkContainer _globalContainer;
+    
+    public GameInstanceConfiguration Configuration => _configuration;
+    public XIWorldContext ActiveWorldContext => _activeWorldContext;
+    public IXIFrameworkContainer GlobalContainer => _globalContainer;
+    
+    protected virtual void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        InitializeContainer();
+        LoadConfiguration();
+    }
+    
+    private void InitializeContainer()
+    {
+        _globalContainer = new FrameworkContainer();
+        
+        // 注册自身到容器
+        _globalContainer.Register<GameInstance>(this);
+        _globalContainer.Register<IConfigurable>(this);
+        
+        // 注册核心服务
+        _globalContainer.Register<IEventSystem>(new EventSystem());
+        _globalContainer.Register<IObjectPool>(new ObjectPool());
+        
+        // 初始化全局子系统
+        InitializeGlobalSubsystems();
+    }
+    
+    public void LoadConfiguration()
+    {
+        if (_configuration == null)
         {
-            
-        }
-
-        public void Update1(float deltaTime)
-        {
-            _subsystemManager?.UpdateSubSystems(Time.deltaTime);
-            _featureManager?.UpdateFeatures(Time.deltaTime);
-        }
-
-        public void Update2(float deltaTime)
-        {
-            
-        }
-        public async UniTask Initialize()
-        {
-            // 初始化框架容器
-            _framework = new XIFrameworkContainer();
-
-            // 注册核心系统
-            _framework.Register<IXIFrameworkContainer>(_framework);
-            _framework.Register(this);
-
-            // 初始化子系统管理器
-            _subsystemManager = new XISubSystemManager(_framework);
-            _framework.Register(_subsystemManager);
-
-            // 初始化GameFeature管理器
-            _featureManager = new XIGameFeatureManager(_framework);
-            _framework.Register(_featureManager);
-
-            // 执行自定义初始化流程
-            await CustomInitialize();
+            _configuration = Resources.Load<GameInstanceConfiguration>("DefaultGameInstanceConfig");
+            if (_configuration == null) _configuration = CreateDefaultConfiguration();
         }
         
-        protected virtual async UniTask CustomInitialize()
-        {
-            // 默认初始化核心子系统
-            InitializeCoreSubsystems();
-
-            // 加载基础GameFeature
-            LoadCoreFeatures();
-
-            // 初始化所有子系统
-            await _subsystemManager.InitializeAll();
-
-            // 初始化所有功能模块
-            await _featureManager.InitializeAll();
-        }
-        public async UniTask Shutdown()
-        {
-            await _featureManager.ShutdownAll();
-            await _subsystemManager.ShutdownAll();
-        }
-
-        // 可重写以添加自定义初始化逻辑
-        protected virtual void InitializeCoreSubsystems()
-        {
-            // 自动注册所有标记了[AutoCreateSubsystem]的子系统
-            var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).Where(t => t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
-            foreach (var type in subsystemTypes)
-            {
-                Debug.Log("AutoCreateSubsystem:"  + type.Name);
-                _subsystemManager.RegisterSubSystem(type);
-            }
-        }
+        // 注册配置到容器
+        _globalContainer.Register(_configuration);
+    }
+    
+    private GameInstanceConfiguration CreateDefaultConfiguration()
+    {
+        var config = ScriptableObject.CreateInstance<GameInstanceConfiguration>();
+        config.name = "DefaultGameInstanceConfig";
+        config.defaultGameMode = typeof(DefaultGameMode);
+        return config;
+    }
+    
+    private void InitializeGlobalSubsystems()
+    {
+        // 自动创建所有全局子系统
+        var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => t.IsSubclassOf(typeof(GameInstanceSubsystem)) 
+                     && t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
         
-        /// <summary>
-        /// 
-        /// </summary>
-        protected virtual void LoadCoreFeatures()
+        foreach (var type in subsystemTypes)
         {
-            //此种实现作用于直接挂载到物体上，自动创建出的GameInstance 或者 走配置的GameInstace需要额外进行实现 后续GameInstace 可作为配置类的方式实现
-            foreach (var feature in _coreFeatures)
-            {
-                Debug.Log("LoadCoreFeature:"  + feature.GetType().Name);
-                _featureManager.LoadFeature(feature);
-            }
+            var subsystem = (GameInstanceSubsystem)_globalContainer.Resolve(type);
+            subsystem.Initialize(this);
         }
-        public T GetSubsystem<T>() where T : XIGameSubSystem => _subsystemManager.GetSubsystem<T>();
-        public void RegisterSubSystem<T>() where T : XIGameSubSystem
+    }
+    
+    public T GetSubsystem<T>() where T : GameInstanceSubsystem
+    {
+        return _globalContainer.Resolve<T>();
+    }
+    
+    public async UniTask InitializeWorldContext(string contextName, XIWorldSettings settings = null)
+    {
+        if (_worldContexts.ContainsKey(contextName)) return;
+        
+        var context = new WorldContext(contextName, this, settings);
+        await context.Initialize();
+        
+        _worldContexts[contextName] = context;
+        
+        if (_activeWorldContext == null)
         {
-            _subsystemManager.RegisterSubSystem<T>();
+            await SetActiveWorldContext(contextName);
         }
-        public void RegisterSubSystem(Type subsystemType)
+    }
+    
+    public async UniTask SetActiveWorldContext(string contextName)
+    {
+        if (!_worldContexts.TryGetValue(contextName, out var context)) return;
+        
+        if (_activeWorldContext != null) await _activeWorldContext.Deactivate();
+        
+        _activeWorldContext = context;
+        await _activeWorldContext.Activate();
+    }
+    
+    protected virtual void Update()
+    {
+        _activeWorldContext?.Update(Time.deltaTime);
+        
+        // 更新全局子系统
+        foreach (var subsystem in _globalContainer.ResolveAll<XIGameInstanceSubSystem>())
         {
-            _subsystemManager.RegisterSubSystem(subsystemType);
+            subsystem.Update(Time.deltaTime);
         }
-        public void LoadFeature(XIGameFeature feature)
+    }
+    
+    protected virtual void OnDestroy()
+    {
+        foreach (var context in _worldContexts.Values)
         {
-            _featureManager.LoadFeature(feature);
+            context.Shutdown().Forget();
         }
-        public void LoadFeature<T>() where T : XIGameFeature, new()
-        {
-            _featureManager.LoadFeature<T>();
-        }
+    }
+    
+    // 从容器解析所有实例
+    public IEnumerable<T> ResolveAll<T>() where T : class
+    {
+        return _globalContainer.ResolveAll<T>();
+    }
     }
 
 // 扩展GameInstance类 (partial实现)

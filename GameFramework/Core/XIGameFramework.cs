@@ -30,7 +30,7 @@ namespace XIFramework.GameFramework
             await RunInitializationSystems(_preInitSystems);
 
             // 初始化游戏实例
-            await _gameInstance.Initialize();
+            //await _gameInstance.Initialize();
 
             // 执行后初始化系统
             await RunInitializationSystems(_postInitSystems);
@@ -63,7 +63,8 @@ namespace XIFramework.GameFramework
         {
             if (_gameInstance == null)
                 throw new InvalidOperationException("GameInstance not initialized");
-            return _gameInstance.GetSubsystem<T>();
+            // return _gameInstance.GetSubsystem<T>();
+            return null;
         }
         public static async UniTask Shutdown()
         {
@@ -73,7 +74,7 @@ namespace XIFramework.GameFramework
 
             // 发送框架关闭事件
             SendEvent(new FrameworkShutdownEvent());
-            await _gameInstance.Shutdown();
+           // await _gameInstance.Shutdown();
             _gameInstance = null;
             _status = FrameworkStatus.NotInitialized;
         }

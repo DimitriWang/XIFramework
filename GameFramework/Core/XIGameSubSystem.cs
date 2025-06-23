@@ -8,11 +8,11 @@ namespace XIFramework.GameFramework
         public enum LifecycleType
         {
             GameInstance,
-            Scene,
+            World,
             Dynamic
         }
-    
-        public virtual LifecycleType Lifecycle => LifecycleType.Scene;
+
+        public virtual LifecycleType Lifecycle => LifecycleType.World;
     
         [Inject]
         protected IXIFrameworkContainer Framework { get; set; }
@@ -22,6 +22,21 @@ namespace XIFramework.GameFramework
         public virtual void Shutdown() { }
     
         protected T GetSubsystem<T>() where T : XIGameSubSystem => Framework.Resolve<XISubSystemManager>().GetSubsystem<T>();
+    }
+    
+    public abstract class XIGameInstanceSubSystem : XIGameSubSystem
+    {
+        public override LifecycleType Lifecycle => LifecycleType.GameInstance;
+    }
+    
+    public abstract class XIWorldSubSystem : XIGameSubSystem
+    {
+        public override LifecycleType Lifecycle => LifecycleType.World;
+    }
+    
+    public abstract class XIDynamicSubSystem : XIGameSubSystem
+    {
+        public override LifecycleType Lifecycle => LifecycleType.Dynamic;
     }
 
     [AttributeUsage(AttributeTargets.Class)]

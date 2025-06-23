@@ -17,14 +17,14 @@ namespace XIFramework.GameLaunch
         {
             
             // 创建GameInstance
-            var gameInstance = XIGameInstance.Instance;
+            //var gameInstance = XIGameInstance.Instance;
 
             // 添加自定义初始化系统
             //XIGameFramework.AddPreInitSystem<DatabasePreInitSystem>();
             // XIGameFramework.AddPostInitSystem<AnalyticsPostInitSystem>();
         
-            // 初始化框架
-            await XIGameFramework.Initialize(gameInstance);
+           // // 初始化框架
+           // await XIGameFramework.Initialize(gameInstance);
             
             // 框架初始化完成，开始游戏逻辑
             

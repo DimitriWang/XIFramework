@@ -9,14 +9,14 @@ namespace XIFramework.GameFramework
         public virtual void Initialize() { }
         public virtual void UpdateFeature(float deltaTime) { }
         public virtual void Shutdown() { }
-    
-        protected T GetSubsystem<T>() where T : XIGameSubSystem => 
-            XIGameInstance.Instance.GetSubsystem<T>();
+
+        protected T GetSubsystem<T>() where T : XIGameSubSystem => null;
+          //  XIGameInstance.Instance.GetSubsystem<T>();
     
         protected void RegisterSubsystem<T>() where T : XIGameSubSystem
         {
             Debug.Log("XIGameFeature.RegisterSubsystem:" + typeof(T).Name);
-            XIGameInstance.Instance.RegisterSubSystem(typeof(T));
+            //XIGameInstance.Instance.RegisterSubSystem(typeof(T));
         }
     }
 }
