@@ -1,4 +1,8 @@
-﻿namespace XIFramework.GameFramework
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+namespace XIFramework.GameFramework
 {
     public class XIWorldContext
     {
@@ -19,8 +23,16 @@
     [System.Serializable]
     public class XIWorldSettings
     {
-        public string sceneName = "MainScene";
-        public System.Type gameModeType;
+        public string SceneName = "MainScene";
+        
+        [Header("Game Mode")]
+        [SerializeField]
+        [TypeConstraint(typeof(GameMode), AllowAbstract = false, IncludeEditorAssemblies = false)]
+        public TypeReference gameModeType;
+        
+        [Header("Game Feature")]
+        public List<XIGameFeature> worldFeatures = new List<XIGameFeature>();
+        
         public bool isPersistent;
     }
 }
