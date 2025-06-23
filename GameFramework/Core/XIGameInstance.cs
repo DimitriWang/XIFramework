@@ -11,131 +11,122 @@ namespace XIFramework.GameFramework
     {
         void LoadConfiguration();
     }
-    
     public abstract class XIGameInstance : MonoBehaviour, IConfigurable
     {
-    [SerializeField] private GameInstanceConfiguration _configuration;
-    
-  //  private readonly Dictionary<string, WorldContext> _worldContexts = new();
-    private XIWorldContext _activeWorldContext;
-    private IXIFrameworkContainer _globalContainer;
-    
-    public GameInstanceConfiguration Configuration => _configuration;
-    public XIWorldContext ActiveWorldContext => _activeWorldContext;
-    public IXIFrameworkContainer GlobalContainer => _globalContainer;
-    
-    protected virtual void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-        InitializeContainer();
-        LoadConfiguration();
-    }
-    
-    private void InitializeContainer()
-    {
-        _globalContainer = new FrameworkContainer();
-        
-        // 注册自身到容器
-        _globalContainer.Register<GameInstance>(this);
-        _globalContainer.Register<IConfigurable>(this);
-        
-        // 注册核心服务
-        _globalContainer.Register<IEventSystem>(new EventSystem());
-        _globalContainer.Register<IObjectPool>(new ObjectPool());
-        
-        // 初始化全局子系统
-        InitializeGlobalSubsystems();
-    }
-    
-    public void LoadConfiguration()
-    {
-        if (_configuration == null)
+        [SerializeField] private GameInstanceConfiguration _configuration;
+
+        //  private readonly Dictionary<string, WorldContext> _worldContexts = new();
+        private XIWorldContext _activeWorldContext;
+        private IXIFrameworkContainer _globalContainer;
+        public GameInstanceConfiguration Configuration => _configuration;
+        public XIWorldContext ActiveWorldContext => _activeWorldContext;
+        public IXIFrameworkContainer GlobalContainer => _globalContainer;
+        protected virtual void Awake()
         {
-            _configuration = Resources.Load<GameInstanceConfiguration>("DefaultGameInstanceConfig");
-            if (_configuration == null) _configuration = CreateDefaultConfiguration();
+            DontDestroyOnLoad(gameObject);
+            InitializeContainer();
+            LoadConfiguration();
         }
-        
-        // 注册配置到容器
-        _globalContainer.Register(_configuration);
-    }
-    
-    private GameInstanceConfiguration CreateDefaultConfiguration()
-    {
-        var config = ScriptableObject.CreateInstance<GameInstanceConfiguration>();
-        config.name = "DefaultGameInstanceConfig";
-        config.defaultGameMode = typeof(DefaultGameMode);
-        return config;
-    }
-    
-    private void InitializeGlobalSubsystems()
-    {
-        // 自动创建所有全局子系统
-        var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(a => a.GetTypes())
-            .Where(t => t.IsSubclassOf(typeof(GameInstanceSubsystem)) 
-                     && t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
-        
-        foreach (var type in subsystemTypes)
+        private void InitializeContainer()
         {
-            var subsystem = (GameInstanceSubsystem)_globalContainer.Resolve(type);
-            subsystem.Initialize(this);
+            _globalContainer = new XIFrameworkContainer();
+
+            // 注册自身到容器
+            _globalContainer.Register<XIGameInstance>(this);
+            _globalContainer.Register<IConfigurable>(this);
+
+            // 注册核心服务
+            //_globalContainer.Register<IEventSystem>(new EventSystem());
+            // _globalContainer.Register<IObjectPool>(new ObjectPool());
+
+            // 初始化全局子系统
+            InitializeGlobalSubsystems();
         }
-    }
-    
-    public T GetSubsystem<T>() where T : GameInstanceSubsystem
-    {
-        return _globalContainer.Resolve<T>();
-    }
-    
-    public async UniTask InitializeWorldContext(string contextName, XIWorldSettings settings = null)
-    {
-        if (_worldContexts.ContainsKey(contextName)) return;
-        
-        var context = new WorldContext(contextName, this, settings);
-        await context.Initialize();
-        
-        _worldContexts[contextName] = context;
-        
-        if (_activeWorldContext == null)
+        public void LoadConfiguration()
         {
-            await SetActiveWorldContext(contextName);
+            if (_configuration == null)
+            {
+                _configuration = Resources.Load<GameInstanceConfiguration>("DefaultGameInstanceConfig");
+                if (_configuration == null) _configuration = CreateDefaultConfiguration();
+            }
+
+            // 注册配置到容器
+            _globalContainer.Register(_configuration);
         }
-    }
-    
-    public async UniTask SetActiveWorldContext(string contextName)
-    {
-        if (!_worldContexts.TryGetValue(contextName, out var context)) return;
-        
-        if (_activeWorldContext != null) await _activeWorldContext.Deactivate();
-        
-        _activeWorldContext = context;
-        await _activeWorldContext.Activate();
-    }
-    
-    protected virtual void Update()
-    {
-        _activeWorldContext?.Update(Time.deltaTime);
-        
-        // 更新全局子系统
-        foreach (var subsystem in _globalContainer.ResolveAll<XIGameInstanceSubSystem>())
+        private GameInstanceConfiguration CreateDefaultConfiguration()
         {
-            subsystem.Update(Time.deltaTime);
+            var config = ScriptableObject.CreateInstance<GameInstanceConfiguration>();
+            config.name = "DefaultGameInstanceConfig";
+            config.defaultGameMode = typeof(DefaultGameMode);
+            return config;
         }
-    }
-    
-    protected virtual void OnDestroy()
-    {
-        foreach (var context in _worldContexts.Values)
+        private void InitializeGlobalSubsystems()
         {
-            context.Shutdown().Forget();
+            // 自动创建所有全局子系统
+            // var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies()
+            //     .SelectMany(a => a.GetTypes())
+            //     .Where(t => t.IsSubclassOf(typeof(GameInstanceSubsystem)) 
+            //              && t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
+            //
+            // foreach (var type in subsystemTypes)
+            // {
+            //     var subsystem = (GameInstanceSubsystem)_globalContainer.Resolve(type);
+            //     subsystem.Initialize(this);
+            // }
         }
-    }
-    
-    // 从容器解析所有实例
-    public IEnumerable<T> ResolveAll<T>() where T : class
-    {
-        return _globalContainer.ResolveAll<T>();
-    }
+
+        // public T GetSubsystem<T>() where T : GameInstanceSubsystem
+        // {
+        //     return _globalContainer.Resolve<T>();
+        // }
+        public async UniTask InitializeWorldContext(string contextName, XIWorldSettings settings = null)
+        {
+            // if (_worldContexts.ContainsKey(contextName)) return;
+            //
+            // var context = new WorldContext(contextName, this, settings);
+            //await context.Initialize();
+
+            // _worldContexts[contextName] = context;
+            if (_activeWorldContext == null)
+            {
+               // await SetActiveWorldContext(contextName);
+            }
+        }
+
+        // public async UniTask SetActiveWorldContext(string contextName)
+        // {
+        //     if (!_worldContexts.TryGetValue(contextName, out var context)) return;
+        //     
+        //     if (_activeWorldContext != null) await _activeWorldContext.Deactivate();
+        //     
+        //     _activeWorldContext = context;
+        //     await _activeWorldContext.Activate();
+        // }
+        //
+        // protected virtual void Update()
+        // {
+        //     _activeWorldContext?.Update(Time.deltaTime);
+        //     
+        //     // 更新全局子系统
+        //     foreach (var subsystem in _globalContainer.ResolveAll<XIGameInstanceSubSystem>())
+        //     {
+        //         subsystem.Update(Time.deltaTime);
+        //     }
+        // }
+        //
+        // protected virtual void OnDestroy()
+        // {
+        //     foreach (var context in _worldContexts.Values)
+        //     {
+        //         context.Shutdown().Forget();
+        //     }
+        // }
+
+        // 从容器解析所有实例
+        // public IEnumerable<T> ResolveAll<T>() where T : class
+        // {
+        //     return _globalContainer.ResolveAll<T>();
+        // }
     }
 
 // 扩展GameInstance类 (partial实现)
