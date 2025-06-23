@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 
-namespace XIFramework.GameFramework
+namespace XIFramework
 {
 // IAsyncShutdown.cs
     public interface IAsyncShutdown

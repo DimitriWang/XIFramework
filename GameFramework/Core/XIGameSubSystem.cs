@@ -21,7 +21,7 @@ namespace XIFramework.GameFramework
         public virtual void Update(float deltaTime) { }
         public virtual void Shutdown() { }
     
-        protected T GetSubsystem<T>() where T : XIGameSubSystem => Framework.Get<XISubSystemManager>().GetSubsystem<T>();
+        protected T GetSubsystem<T>() where T : XIGameSubSystem => Framework.Resolve<XISubSystemManager>().GetSubsystem<T>();
     }
 
     [AttributeUsage(AttributeTargets.Class)]

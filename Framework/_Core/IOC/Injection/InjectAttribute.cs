@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XIFramework.GameFramework
+namespace XIFramework
 {
 // InjectAttribute.cs
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
