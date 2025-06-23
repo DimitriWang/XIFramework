@@ -1,4 +1,6 @@
-﻿namespace XIFramework.GameFramework
+﻿using System;
+
+namespace XIFramework.GameFramework
 {
     public class GameMode
     {
@@ -9,6 +11,7 @@
     }
     
     // 默认GameMode实现
+    [Serializable]
     public class DefaultGameMode : GameMode
     {
         public override void StartGame()
