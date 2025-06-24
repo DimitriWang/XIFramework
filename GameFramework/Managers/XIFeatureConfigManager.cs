@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace XIFramework.GameFramework
 {
+    [AutoCreateSubsystem]
     public class XIFeatureConfigManager : XIGameInstanceSubsystem, IAsyncInitialization
     {
         private Dictionary<string, XIGameFeatureConfig> _configCache = new();

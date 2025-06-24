@@ -13,17 +13,13 @@ namespace XIFramework.GameFramework
     {
         [Inject]
         public XIWorldContext Context { get; internal set; }
-        
         [Inject]
         public IXIFrameworkContainer WorldContainer { get; internal set; }
-        
         [Inject]
         public XIFeatureConfigManager FeatureConfigManager { get; internal set; }
         
         public XIGameMode GameMode { get; private set; }
-
         public XIGameState GameState { get; private set; }
-        
         public XIGameFeatureManager FeatureManager { get; private set; }
     
         public bool IsRunning { get; private set; }

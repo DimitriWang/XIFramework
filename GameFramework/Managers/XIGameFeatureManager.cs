@@ -7,8 +7,13 @@ namespace XIFramework.GameFramework
 {
     public class XIGameFeatureManager
     {
-        [Inject] public IXIFrameworkContainer _framework { get; set; }
-        private readonly Dictionary<XIGameFeature, XIGameFeatureConfig.FeatureLoadMode> _features = new();
+        public class FeatureLoadRecord
+        {
+            public XIGameFeatureConfig.FeatureLoadMode loadMode;
+            public bool isLoaded;
+        }
+        
+        private readonly Dictionary<XIGameFeature, FeatureLoadRecord> _features = new();
         private readonly List<XIGameFeature> _activeFeatures = new();
         private XIGameWorld World { get; set; }
         public XIGameFeatureManager(XIGameWorld world)
@@ -19,28 +24,27 @@ namespace XIFramework.GameFramework
         public void LoadFeature(XIGameFeature feature, XIGameFeatureConfig.FeatureLoadMode loadMode)
         {
             if (feature == null) return;
-
-            // 初始化特性
-            feature.Initialize();
-
-            // 存储特性和加载模式
-            _features[feature] = loadMode;
-
-            // 根据加载模式处理
-            switch (loadMode)
+        
+            if (!_features.ContainsKey(feature))
             {
-                case XIGameFeatureConfig.FeatureLoadMode.Preload:
+                feature.Initialize();
+                _features[feature] = new FeatureLoadRecord {
+                    loadMode = loadMode,
+                    isLoaded = false
+                };
+            
+                if (loadMode == XIGameFeatureConfig.FeatureLoadMode.Preload)
+                {
                     ActivateFeature(feature);
-                    break;
-                case XIGameFeatureConfig.FeatureLoadMode.InitializeWithWorld:
-                    // 世界激活时激活
-                    break;
+                }
             }
         }
         public async UniTask LoadFeatureAsync(string featureName)
         {
             // 查找按需加载的特性
-            var featureEntry = _features.FirstOrDefault(f => f.Key.name == featureName && f.Value == XIGameFeatureConfig.FeatureLoadMode.OnDemand);
+            var featureEntry = _features.FirstOrDefault(f => 
+                f.Key.name == featureName && 
+                f.Value.loadMode == XIGameFeatureConfig.FeatureLoadMode.OnDemand);
             if (featureEntry.Key != null)
             {
                 await ActivateFeatureAsync(featureEntry.Key);
@@ -54,7 +58,7 @@ namespace XIFramework.GameFramework
         {
             foreach (var featureEntry in _features)
             {
-                if (featureEntry.Value == XIGameFeatureConfig.FeatureLoadMode.InitializeWithWorld)
+                if (featureEntry.Value.loadMode == XIGameFeatureConfig.FeatureLoadMode.InitializeWithWorld)
                 {
                     ActivateFeature(featureEntry.Key);
                 }
@@ -62,16 +66,18 @@ namespace XIFramework.GameFramework
         }
         private void ActivateFeature(XIGameFeature feature)
         {
-            if (_activeFeatures.Contains(feature)) return;
+            if (!_features.TryGetValue(feature, out var record) || record.isLoaded) 
+                return;
+        
             feature.Activate();
+            record.isLoaded = true;
             _activeFeatures.Add(feature);
-            Debug.Log($"Feature activated: {feature.name}");
         }
         private async UniTask ActivateFeatureAsync(XIGameFeature feature)
         {
-            if (_activeFeatures.Contains(feature)) return;
-
-            // 异步激活特性
+            if (!_features.TryGetValue(feature, out var record) || record.isLoaded) 
+                return;
+        
             if (feature is IAsyncFeature asyncFeature)
             {
                 await asyncFeature.ActivateAsync();
@@ -80,14 +86,14 @@ namespace XIFramework.GameFramework
             {
                 feature.Activate();
             }
+        
+            record.isLoaded = true;
             _activeFeatures.Add(feature);
-            Debug.Log($"Feature activated asynchronously: {feature.name}");
         }
         public void DeactivateWorldFeatures()
         {
-            foreach (var feature in _activeFeatures.ToList()) // ToList to avoid modification during iteration
+            foreach (var feature in _activeFeatures.ToList())
             {
-                // 只停用世界特性，全局特性保持激活
                 if (feature.Scope == XIGameFeature.FeatureScope.World)
                 {
                     DeactivateFeature(feature);
@@ -98,7 +104,11 @@ namespace XIFramework.GameFramework
         {
             feature.Deactivate();
             _activeFeatures.Remove(feature);
-            Debug.Log($"Feature deactivated: {feature.name}");
+        
+            if (_features.TryGetValue(feature, out var record))
+            {
+                record.isLoaded = false;
+            }
         }
         public void Update(float deltaTime)
         {
@@ -115,6 +125,11 @@ namespace XIFramework.GameFramework
             }
             _activeFeatures.Clear();
             _features.Clear();
+        }
+        
+        public T GetFeature<T>() where T : XIGameFeature
+        {
+            return _features.Keys.OfType<T>().FirstOrDefault();
         }
     }
     
