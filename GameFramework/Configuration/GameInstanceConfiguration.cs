@@ -12,11 +12,11 @@ namespace XIFramework.GameFramework
         [TypeConstraint(typeof(XIGameMode), IncludeEditorAssemblies = false)]
         public TypeReference _defaultGameMode;
         
+        public System.Type DefaultGameMode => _defaultGameMode.Type;
+
+        
         [Header("World Settings")]
         public XIWorldSettings defaultWorldSettings;
-
-        public System.Type DefaultGameMode => _defaultGameMode.Type;
-        
         
         [Header("Core Systems")]
         [SerializeField]

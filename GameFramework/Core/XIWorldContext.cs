@@ -33,7 +33,6 @@ namespace XIFramework.GameFramework
         
             // 创建GameWorld
             GameWorld = WorldContainer.Resolve<XIGameWorld>();
-            GameWorld.Context = this;
             await GameWorld.Initialize();
         
             // 初始化世界子系统

@@ -4,9 +4,10 @@
 
     public class XIGameState
     {
-        public XIGameWorld World { get; private set; }
-        public bool IsGameActive { get; private set; }
-        public float GameTime { get; private set; }
+        [Inject]
+        public XIGameWorld World { get; protected set; }
+        public bool IsGameActive { get; protected set; }
+        public float GameTime { get; protected set; }
     
         private readonly List<XIPlayerState> _playerStates = new();
     
