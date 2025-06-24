@@ -6,17 +6,19 @@ namespace XIFramework.GameFramework
 {
     public abstract class XIGameMode
     {
-        public XIGameWorld World { get; private set; }
-        public XIGameState GameState { get; protected set; }
+        [Inject]
+        protected XIGameWorld World { get; private set; }
+        [Inject]
+        protected XIGameState GameState { get; private set; }
+        [Inject]
+        protected IXIFrameworkContainer WorldContainer { get; private set; }
+        
         public XIPlayerController[] Players { get; protected set; }
-        protected Type DefaultPlayerControllerType { get; set; }
-        protected Type DefaultPlayerStateType { get; set; }
+        protected Type DefaultPlayerControllerType { get; set; } = typeof(XIPlayerController);
+        protected Type DefaultPlayerStateType { get; set; } = typeof(XIPlayerState);
         public virtual void Initialize(XIGameWorld world)
         {
-            World = world;
-            GameState = world.GameState;
-
-            // 设置默认类型
+            
             DefaultPlayerControllerType = typeof(XIPlayerController);
             DefaultPlayerStateType = typeof(XIPlayerState);
         }
@@ -27,6 +29,36 @@ namespace XIFramework.GameFramework
             // 创建初始玩家
             CreateInitialPlayers();
         }
+        
+        protected virtual void CreateInitialPlayers()
+        {
+            int playerCount = World.Context.GameInstance.Configuration.maxPlayers;
+            Players = new XIPlayerController[playerCount];
+            for (int i = 0; i < playerCount; i++)
+            {
+                Players[i] = CreatePlayer(i);
+            }
+        }
+        
+        public virtual XIPlayerController CreatePlayer(int playerId)
+        {
+            var playerType = DefaultPlayerControllerType;
+            var player = (XIPlayerController)Activator.CreateInstance(playerType);
+            player.Initialize(World, playerId);
+
+            // 创建PlayerState
+            var playerState = (XIPlayerState)Activator.CreateInstance(DefaultPlayerStateType);
+            playerState.Initialize(World, playerId);
+            player.PlayerState = playerState;
+            GameState.AddPlayerState(playerState);
+            return player;
+        }
+        
+        public virtual void Update(float deltaTime)
+        {
+            // 游戏逻辑更新
+        }
+        
         public virtual async UniTask EndGame()
         {
             Debug.Log($"GameMode '{GetType().Name}' ending in world '{World.Context.Name}'");
@@ -42,32 +74,9 @@ namespace XIFramework.GameFramework
             }
             await UniTask.Delay(100); // 模拟清理过程
         }
-        public virtual void Update(float deltaTime)
-        {
-            // 游戏逻辑更新
-        }
-        protected virtual void CreateInitialPlayers()
-        {
-            int playerCount = World.Context.GameInstance.Configuration.maxPlayers;
-            Players = new XIPlayerController[playerCount];
-            for (int i = 0; i < playerCount; i++)
-            {
-                Players[i] = CreatePlayer(i);
-            }
-        }
-        public virtual XIPlayerController CreatePlayer(int playerId)
-        {
-            var playerType = DefaultPlayerControllerType;
-            var player = (XIPlayerController)Activator.CreateInstance(playerType);
-            player.Initialize(World, playerId);
 
-            // 创建PlayerState
-            var playerState = (XIPlayerState)Activator.CreateInstance(DefaultPlayerStateType);
-            playerState.Initialize(World, playerId);
-            player.PlayerState = playerState;
-            GameState.AddPlayerState(playerState);
-            return player;
-        }
+
+
     }
 
     // 默认GameMode实现
