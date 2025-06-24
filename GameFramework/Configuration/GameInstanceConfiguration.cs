@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace XIFramework.GameFramework
 {
@@ -27,9 +28,9 @@ namespace XIFramework.GameFramework
         [Space]
         [SerializeField]
         [TypeConstraint(typeof(XIGameInstance), AllowAbstract = false, IncludeEditorAssemblies = false)]
-        private TypeReference _fallbackGameInstanceType;
+        private TypeReference _overrideGameInstanceType;
     
-        public System.Type FallbackGameInstanceType => _fallbackGameInstanceType.Type;
+        public System.Type OverrideGameInstanceType => _overrideGameInstanceType.Type;
         
         [Header("Player")]
       //  public System.Type defaultPlayerController = typeof(PlayerController);

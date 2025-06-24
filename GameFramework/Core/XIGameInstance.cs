@@ -65,18 +65,18 @@ namespace XIFramework.GameFramework
             // 自动创建所有全局子系统
             var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
-                .Where(t => t.IsSubclassOf(typeof(GameInstanceSubsystem)) 
+                .Where(t => t.IsSubclassOf(typeof(XIGameInstanceSubsystem)) 
                          && t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
             
             foreach (var type in subsystemTypes)
             {
-                var subsystem = (GameInstanceSubsystem)_globalContainer.Resolve(type);
+                var subsystem = (XIGameInstanceSubsystem)_globalContainer.Resolve(type);
                 subsystem.GameInstance = this;
                 subsystem.Initialize();
             }
         }
 
-        public T GetSubsystem<T>() where T : GameInstanceSubsystem
+        public T GetSubsystem<T>() where T : XIGameInstanceSubsystem
         {
             return _globalContainer.Resolve<T>();
         }
@@ -104,40 +104,39 @@ namespace XIFramework.GameFramework
             _activeWorldContext = context;
             await _activeWorldContext.Activate();
         }
-        //
-        // protected virtual void Update()
-        // {
-        //     _activeWorldContext?.Update(Time.deltaTime);
-        //     
-        //     // 更新全局子系统
-        //     foreach (var subsystem in _globalContainer.ResolveAll<XIGameInstanceSubSystem>())
-        //     {
-        //         subsystem.Update(Time.deltaTime);
-        //     }
-        // }
-        //
-        // protected virtual void OnDestroy()
-        // {
-        //     foreach (var context in _worldContexts.Values)
-        //     {
-        //         context.Shutdown().Forget();
-        //     }
-        // }
+        
+        protected virtual void Update()
+        {
+            _activeWorldContext?.Update(Time.deltaTime);
+            
+            // 更新全局子系统
+            foreach (var subsystem in _globalContainer.ResolveAll<XIGameInstanceSubsystem>())
+            {
+                subsystem.Update(Time.deltaTime);
+            }
+        }
+        
+        protected virtual void OnDestroy()
+        {
+            foreach (var context in _worldContexts.Values)
+            {
+                context.Shutdown().Forget();
+            }
+        }
 
         // 从容器解析所有实例
-        // public IEnumerable<T> ResolveAll<T>() where T : class
-        // {
-        //     return _globalContainer.ResolveAll<T>();
-        // }
+        public IEnumerable<T> ResolveAll<T>() where T : class
+        {
+            return _globalContainer.ResolveAll<T>();
+        }
     }
 
-// 扩展GameInstance类 (partial实现)
-
-    public class GameInstance : XIGameInstance
+    public class DefaultGameInstance : XIGameInstance
     {
         
     }
 
+    //测试GameInstance类
     public class TestGameInstance : XIGameInstance
     {
         

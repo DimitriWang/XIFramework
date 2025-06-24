@@ -12,20 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 859c3c5e8c224690a7b357364d47da0b, type: 3}
   m_Name: GameInstanceConfig
   m_EditorClassIdentifier: 
+  _defaultGameMode:
+    _assemblyQualifiedName: XIFramework.GameFramework.XIMultiplayerGameMode, XIFramework.GameFramework,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   defaultWorldSettings:
-    sceneName: MainScene
+    SceneName: MainScene
     gameModeType:
       _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameMode, XIFramework.GameFramework,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    worldFeatures: []
     isPersistent: 0
-  _defaultGameMode:
-    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameMode, XIFramework.GameFramework,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   _defaultGameInstanceType:
-    _assemblyQualifiedName: XIFramework.GameFramework.GameInstance, XIFramework.GameFramework,
+    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameInstance, XIFramework.GameFramework,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  _fallbackGameInstanceType:
-    _assemblyQualifiedName: XIFramework.GameFramework.TestGameInstance, XIFramework.GameFramework,
+  _overrideGameInstanceType:
+    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameInstance, XIFramework.GameFramework,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   maxPlayers: 4
   enableNetworking: 0
