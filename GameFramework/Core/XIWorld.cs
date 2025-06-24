@@ -17,6 +17,9 @@ namespace XIFramework.GameFramework
         [Inject]
         public IXIFrameworkContainer WorldContainer { get; internal set; }
         
+        [Inject]
+        public XIFeatureConfigManager FeatureConfigManager { get; internal set; }
+        
         public XIGameMode GameMode { get; private set; }
 
         public XIGameState GameState { get; private set; }
@@ -32,8 +35,8 @@ namespace XIFramework.GameFramework
             WorldContainer.Register(this);
         
             // 创建特性管理器
-            FeatureManager = WorldContainer.Resolve<XIGameFeatureManager>();
-        
+            FeatureManager = new XIGameFeatureManager(this);
+            WorldContainer.Register(FeatureManager);
             // 加载世界特性
             await LoadWorldFeatures();
             // 加载场景

@@ -10,7 +10,11 @@ namespace XIFramework.GameFramework
         [Inject] public IXIFrameworkContainer _framework { get; set; }
         private readonly Dictionary<XIGameFeature, XIGameFeatureConfig.FeatureLoadMode> _features = new();
         private readonly List<XIGameFeature> _activeFeatures = new();
-        [Inject] private XIGameWorld World { get; set; }
+        private XIGameWorld World { get; set; }
+        public XIGameFeatureManager(XIGameWorld world)
+        {
+            World = world;
+        }
         public XIGameFeatureManager() { }
         public void LoadFeature(XIGameFeature feature, XIGameFeatureConfig.FeatureLoadMode loadMode)
         {
