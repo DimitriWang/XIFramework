@@ -31,9 +31,14 @@ namespace XIFramework.GameFramework
         private TypeReference _overrideGameInstanceType;
     
         public System.Type OverrideGameInstanceType => _overrideGameInstanceType.Type;
+
+        [Header("Player")] 
+        [SerializeField] 
+        [TypeConstraint(typeof(XIPlayerController), AllowAbstract = false, IncludeEditorAssemblies = false)]
+        public TypeReference defaultPlayerController; 
         
-        [Header("Player")]
-      //  public System.Type defaultPlayerController = typeof(PlayerController);
+        public System.Type DefaultPlayerController => defaultPlayerController.Type;
+        
         public int maxPlayers = 4;
     
         [Header("Networking")]
@@ -49,11 +54,11 @@ namespace XIFramework.GameFramework
                 _defaultGameMode = typeof(DefaultGameMode);
             }
         
-            // if (!typeof(PlayerController).IsAssignableFrom(defaultPlayerController))
-            // {
-            //     Debug.LogError("defaultPlayerController must be a subclass of PlayerController");
-            //     defaultPlayerController = typeof(PlayerController);
-            // }
+            if (!typeof(XIPlayerController).IsAssignableFrom(defaultPlayerController))
+            {
+                Debug.LogError("defaultPlayerController must be a subclass of PlayerController");
+                defaultPlayerController = typeof(DefaulePlayerController);
+            }
         }
     }
 }

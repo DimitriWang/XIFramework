@@ -25,6 +25,11 @@
         }
     }
 
+    public class DefaulePlayerController : XIPlayerController
+    {
+        
+    }
+
 // 本地玩家控制器
     public class LocalPlayerController : XIPlayerController
     {

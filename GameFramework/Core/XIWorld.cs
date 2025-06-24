@@ -46,18 +46,33 @@ namespace XIFramework.GameFramework
         
         private async UniTask LoadWorldFeatures()
         {
-            // // 加载特性配置
-            // var featureConfigs = Resources.LoadAll<GameFeatureConfig>($"Features/{_context.Name}");
-            //
-            // foreach (var config in featureConfigs)
-            // {
-            //     foreach (var feature in config.features)
-            //     {
-            //         // 通过容器创建特性实例
-            //         var featureInstance = _worldContainer.Resolve(feature.GetType()) as GameFeature;
-            //         FeatureManager.LoadFeature(featureInstance);
-            //     }
-            // }
+// 加载默认配置
+            var defaultConfig = await FeatureConfigManager.GetConfigAsync("DefaultFeatureConfig");
+            if (defaultConfig != null)
+            {
+                defaultConfig.ApplyConfig(this);
+            }
+        
+            // 加载世界特定配置
+            var worldConfig = await FeatureConfigManager.GetConfigAsync($"{Context.Name}Features");
+            if (worldConfig != null)
+            {
+                worldConfig.ApplyConfig(this);
+            }
+        
+            // 加载平台特定配置
+            var platformConfig = await FeatureConfigManager.GetConfigAsync($"{Application.platform}Features");
+            if (platformConfig != null)
+            {
+                platformConfig.ApplyConfig(this);
+            }
+        
+            // 加载场景特定配置
+            var sceneConfig = Resources.Load<WorldFeatureConfig>($"Features/{Context.Settings.SceneName}");
+            if (sceneConfig != null)
+            {
+                sceneConfig.ApplyConfig(this);
+            }
         }
         
         public void CreateGameMode()
