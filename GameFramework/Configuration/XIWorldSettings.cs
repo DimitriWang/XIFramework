@@ -12,10 +12,10 @@ namespace XIFramework.GameFramework
         [SerializeField]
         [TypeConstraint(typeof(XIGameMode), AllowAbstract = false, IncludeEditorAssemblies = false)]
         public TypeReference gameModeType;
+        public bool isPersistent;
         
         [Header("Game Feature")]
-        public List<XIGameFeature> worldFeatures = new List<XIGameFeature>();
-        
-        public bool isPersistent;
+        public string featureConfigName = "DefaultFeatureConfig";
+        public bool loadAsync = true;
     }
 }

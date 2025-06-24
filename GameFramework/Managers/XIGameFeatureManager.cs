@@ -8,11 +8,11 @@ namespace XIFramework.GameFramework
     public class XIGameFeatureManager
     {
         [Inject] public IXIFrameworkContainer _framework { get; set; }
-        private readonly Dictionary<XIGameFeature, GameFeatureConfig.FeatureLoadMode> _features = new();
+        private readonly Dictionary<XIGameFeature, XIGameFeatureConfig.FeatureLoadMode> _features = new();
         private readonly List<XIGameFeature> _activeFeatures = new();
         [Inject] private XIGameWorld World { get; set; }
         public XIGameFeatureManager() { }
-        public void LoadFeature(XIGameFeature feature, GameFeatureConfig.FeatureLoadMode loadMode)
+        public void LoadFeature(XIGameFeature feature, XIGameFeatureConfig.FeatureLoadMode loadMode)
         {
             if (feature == null) return;
 
@@ -25,10 +25,10 @@ namespace XIFramework.GameFramework
             // 根据加载模式处理
             switch (loadMode)
             {
-                case GameFeatureConfig.FeatureLoadMode.Preload:
+                case XIGameFeatureConfig.FeatureLoadMode.Preload:
                     ActivateFeature(feature);
                     break;
-                case GameFeatureConfig.FeatureLoadMode.InitializeWithWorld:
+                case XIGameFeatureConfig.FeatureLoadMode.InitializeWithWorld:
                     // 世界激活时激活
                     break;
             }
@@ -36,7 +36,7 @@ namespace XIFramework.GameFramework
         public async UniTask LoadFeatureAsync(string featureName)
         {
             // 查找按需加载的特性
-            var featureEntry = _features.FirstOrDefault(f => f.Key.name == featureName && f.Value == GameFeatureConfig.FeatureLoadMode.OnDemand);
+            var featureEntry = _features.FirstOrDefault(f => f.Key.name == featureName && f.Value == XIGameFeatureConfig.FeatureLoadMode.OnDemand);
             if (featureEntry.Key != null)
             {
                 await ActivateFeatureAsync(featureEntry.Key);
@@ -50,7 +50,7 @@ namespace XIFramework.GameFramework
         {
             foreach (var featureEntry in _features)
             {
-                if (featureEntry.Value == GameFeatureConfig.FeatureLoadMode.InitializeWithWorld)
+                if (featureEntry.Value == XIGameFeatureConfig.FeatureLoadMode.InitializeWithWorld)
                 {
                     ActivateFeature(featureEntry.Key);
                 }
