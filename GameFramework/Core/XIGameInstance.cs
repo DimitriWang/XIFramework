@@ -15,7 +15,7 @@ namespace XIFramework.GameFramework
     {
         [SerializeField] private GameInstanceConfiguration _configuration;
 
-        //  private readonly Dictionary<string, WorldContext> _worldContexts = new();
+        private readonly Dictionary<string, XIWorldContext> _worldContexts = new();
         private XIWorldContext _activeWorldContext;
         private IXIFrameworkContainer _globalContainer;
         public GameInstanceConfiguration Configuration => _configuration;
@@ -63,46 +63,47 @@ namespace XIFramework.GameFramework
         private void InitializeGlobalSubsystems()
         {
             // 自动创建所有全局子系统
-            // var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies()
-            //     .SelectMany(a => a.GetTypes())
-            //     .Where(t => t.IsSubclassOf(typeof(GameInstanceSubsystem)) 
-            //              && t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
-            //
-            // foreach (var type in subsystemTypes)
-            // {
-            //     var subsystem = (GameInstanceSubsystem)_globalContainer.Resolve(type);
-            //     subsystem.Initialize(this);
-            // }
-        }
-
-        // public T GetSubsystem<T>() where T : GameInstanceSubsystem
-        // {
-        //     return _globalContainer.Resolve<T>();
-        // }
-        public async UniTask InitializeWorldContext(string contextName, XIWorldSettings settings = null)
-        {
-            await UniTask.CompletedTask;
-            // if (_worldContexts.ContainsKey(contextName)) return;
-            //
-            // var context = new WorldContext(contextName, this, settings);
-            //await context.Initialize();
-
-            // _worldContexts[contextName] = context;
-            if (_activeWorldContext == null)
+            var subsystemTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .Where(t => t.IsSubclassOf(typeof(GameInstanceSubsystem)) 
+                         && t.IsDefined(typeof(AutoCreateSubsystemAttribute), false));
+            
+            foreach (var type in subsystemTypes)
             {
-               // await SetActiveWorldContext(contextName);
+                var subsystem = (GameInstanceSubsystem)_globalContainer.Resolve(type);
+                subsystem.GameInstance = this;
+                subsystem.Initialize();
             }
         }
 
-        // public async UniTask SetActiveWorldContext(string contextName)
-        // {
-        //     if (!_worldContexts.TryGetValue(contextName, out var context)) return;
-        //     
-        //     if (_activeWorldContext != null) await _activeWorldContext.Deactivate();
-        //     
-        //     _activeWorldContext = context;
-        //     await _activeWorldContext.Activate();
-        // }
+        public T GetSubsystem<T>() where T : GameInstanceSubsystem
+        {
+            return _globalContainer.Resolve<T>();
+        }
+        public async UniTask InitializeWorldContext(string contextName, XIWorldSettings settings = null)
+        {
+            await UniTask.CompletedTask; 
+            if (_worldContexts.ContainsKey(contextName)) return;
+            
+             var context = new XIWorldContext(contextName, this, settings);
+             await context.Initialize();
+
+            _worldContexts[contextName] = context;
+            if (_activeWorldContext == null)
+            { 
+                await SetActiveWorldContext(contextName);
+            }
+        }
+
+        public async UniTask SetActiveWorldContext(string contextName)
+        {
+            if (!_worldContexts.TryGetValue(contextName, out var context)) return;
+            
+            if (_activeWorldContext != null) await _activeWorldContext.Deactivate();
+            
+            _activeWorldContext = context;
+            await _activeWorldContext.Activate();
+        }
         //
         // protected virtual void Update()
         // {

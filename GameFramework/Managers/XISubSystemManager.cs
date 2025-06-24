@@ -32,21 +32,7 @@ namespace XIFramework.GameFramework
         {
             RegisterSubSystem(typeof(T));
         }
-        public async UniTask InitializeAll()
-        {
-            await UniTask.CompletedTask;
-            foreach (var subsystem in _subSystemList)
-            {
-                if (subsystem is IAsyncInitialization asyncSubsystem)
-                {
-                    await asyncSubsystem.InitializeAsync();
-                }
-                else
-                {
-                    subsystem.Initialize();
-                }
-            }
-        }
+        
         public async UniTask ShutdownAll()
         {
             foreach (var subsystem in _subsystems.Values)

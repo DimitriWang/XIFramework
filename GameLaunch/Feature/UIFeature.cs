@@ -11,7 +11,6 @@ namespace XIFramework.GameLaunch
         {
          
             Debug.Log("UIFeature Init");
-            RegisterSubsystem<UISubsystem>();
         }
         public override void UpdateFeature(float deltaTime)
         {

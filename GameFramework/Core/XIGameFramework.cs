@@ -68,6 +68,7 @@ namespace XIFramework.GameFramework
         }
         public static async UniTask Shutdown()
         {
+            await UniTask.CompletedTask;
             if (_status != FrameworkStatus.Running)
                 return;
             _status = FrameworkStatus.ShuttingDown;

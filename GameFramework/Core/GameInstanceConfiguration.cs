@@ -6,13 +6,13 @@ namespace XIFramework.GameFramework
     [CreateAssetMenu(fileName = "GameInstanceConfig", menuName = "XIFramework/Game/GameInstance Configuration")]
     public class GameInstanceConfiguration : ScriptableObject
     {
-        [Header("World Settings")]
-        public XIWorldSettings defaultWorldSettings;
-
         [Header("Game Mode")] 
         [SerializeField] 
-        [TypeConstraint(typeof(GameMode), IncludeEditorAssemblies = false)]
+        [TypeConstraint(typeof(XIGameMode), IncludeEditorAssemblies = false)]
         public TypeReference _defaultGameMode;
+        
+        [Header("World Settings")]
+        public XIWorldSettings defaultWorldSettings;
 
         public System.Type DefaultGameMode => _defaultGameMode.Type;
         
@@ -42,7 +42,7 @@ namespace XIFramework.GameFramework
     
         private void OnValidate()
         {
-            if (!typeof(GameMode).IsAssignableFrom(_defaultGameMode))
+            if (!typeof(XIGameMode).IsAssignableFrom(_defaultGameMode))
             {
                 Debug.LogError("defaultGameMode 属性 不继承自GameMode 自动变更为DefaultGameMode");
                 _defaultGameMode = typeof(DefaultGameMode);
