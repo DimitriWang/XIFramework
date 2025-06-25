@@ -129,6 +129,31 @@ namespace XIFramework.GameFramework
         {
             return _globalContainer.ResolveAll<T>();
         }
+        public void SetConfiguration(GameInstanceConfiguration gameInstanceConfig)
+        {
+            _configuration = gameInstanceConfig;
+        }
+        
+        
+        public XIWorldContext GetWorldContext(string contextName)
+        {
+            return _worldContexts.TryGetValue(contextName, out var context) ? context : null;
+        }
+    
+        public T GetWorldContext<T>(string contextName) where T : XIWorldContext
+        {
+            return GetWorldContext(contextName) as T;
+        }
+        
+        public XIGameMode GetActiveGameMode()
+        {
+            return _activeWorldContext?.GameWorld?.GameMode;
+        }
+    
+        public T GetActiveGameMode<T>() where T : XIGameMode
+        {
+            return GetActiveGameMode() as T;
+        }
     }
 
     public class DefaultGameInstance : XIGameInstance
