@@ -13,21 +13,21 @@ MonoBehaviour:
   m_Name: DefaultGameInstanceConfig
   m_EditorClassIdentifier: 
   _defaultGameMode:
-    _assemblyQualifiedName: XIFramework.GameFramework.XIMultiplayerGameMode, XIFramework.GameFramework,
+    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameMode, XIFramework.GameFramework,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   defaultWorldSettings:
-    SceneName: MainScene
-    gameModeType:
+    PersistentLevel: MainLevels
+    SubLevels: []
+    GameModeType:
       _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameMode, XIFramework.GameFramework,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    isPersistent: 0
-    featureConfigName: DefaultFeatureConfig
-    loadAsync: 1
+    FeatureConfigName: DefaultFeatureConfig
+    isAsyncLoad: 1
   _defaultGameInstanceType:
-    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameInstance, XIFramework.GameFramework,
+    _assemblyQualifiedName: XIFramework.GameLaunch.DefaultGameInstance, XIFramework.GameLaunch,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   _overrideGameInstanceType:
-    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameInstance, XIFramework.GameFramework,
+    _assemblyQualifiedName: XIFramework.GameLaunch.DefaultGameInstance, XIFramework.GameLaunch,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   defaultPlayerController:
     _assemblyQualifiedName: XIFramework.GameFramework.DefaulePlayerController, XIFramework.GameFramework,

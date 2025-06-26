@@ -2,8 +2,7 @@
 
 namespace XIFramework
 {
-// InjectAttribute.cs
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter)]
     public class InjectAttribute : Attribute { }
 
 }

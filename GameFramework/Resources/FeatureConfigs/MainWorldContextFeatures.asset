@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e20ac45008d4a909a748d1675a5312e, type: 3}
-  m_Name: PlatformFeatureConfig
+  m_Script: {fileID: 11500000, guid: 27f4989a5f03444eadc38197201a9fa8, type: 3}
+  m_Name: MainWorldContextFeatures
   m_EditorClassIdentifier: 
-  configName: PlatformFeatureConfig
+  configName: DefaultFeatureConfig
   featureEntries: []
-  targetPlatform: 0
+  targetWorldName: 
+  worldPhysicsFeature: {fileID: 0}
+  aiSystemFeature: {fileID: 0}

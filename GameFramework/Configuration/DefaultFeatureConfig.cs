@@ -13,18 +13,18 @@ namespace XIFramework.GameFramework
         {
             // 确保核心特性始终启用
             featureEntries.RemoveAll(e => e.feature == uiFeature || e.feature == inputFeature);
-            featureEntries.Add(new GameFeatureEntry
-            {
-                feature = uiFeature,
-                enabled = true,
-                loadMode = FeatureLoadMode.InitializeWithWorld
-            });
-            featureEntries.Add(new GameFeatureEntry
-            {
-                feature = inputFeature,
-                enabled = true,
-                loadMode = FeatureLoadMode.InitializeWithWorld
-            });
+            // featureEntries.Add(new GameFeatureEntry
+            // {
+            //     feature = uiFeature,
+            //     enabled = true,
+            //     loadMode = FeatureLoadMode.InitializeWithWorld
+            // });
+            // featureEntries.Add(new GameFeatureEntry
+            // {
+            //     feature = inputFeature,
+            //     enabled = true,
+            //     loadMode = FeatureLoadMode.InitializeWithWorld
+            // });
             if (audioFeature != null)
             {
                 featureEntries.Add(new GameFeatureEntry

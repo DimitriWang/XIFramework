@@ -25,33 +25,9 @@
         }
     }
 
-    public class DefaulePlayerController : XIPlayerController
-    {
-        
-    }
 
-// 本地玩家控制器
-    public class LocalPlayerController : XIPlayerController
-    {
-        public override void UpdateController(float deltaTime)
-        {
-            base.UpdateController(deltaTime);
-            // 处理本地输入
-        }
-    }
 
-// 网络玩家控制器
-    public class NetworkPlayerController : XIPlayerController
-    {
-        public override void Initialize(XIGameWorld world, int playerId)
-        {
-            base.Initialize(world, playerId);
-            IsLocalPlayer = false;
-        }
-        //
-        // public void ProcessNetworkInput(PlayerInputData inputData)
-        // {
-        //     // 处理网络输入
-        // }
-    }
+
+
+
 }

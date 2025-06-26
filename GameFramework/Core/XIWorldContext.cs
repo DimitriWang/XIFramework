@@ -39,6 +39,7 @@ namespace XIFramework.GameFramework
             // 创建世界容器（子容器）
             WorldContainer = GameInstance.GlobalContainer.CreateChildContainer();
         
+            WorldContainer.Register<IXIFrameworkContainer>(WorldContainer);
             // 注册核心服务
             WorldContainer.Register(this);
             WorldContainer.Register<XIWorldSettings>(Settings);

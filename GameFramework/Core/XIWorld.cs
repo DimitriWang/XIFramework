@@ -13,7 +13,6 @@ namespace XIFramework.GameFramework
     {
         [Inject]
         public XIWorldContext Context { get; internal set; }
-        [Inject]
         public IXIFrameworkContainer WorldContainer { get; internal set; }
         [Inject]
         public XIFeatureConfigManager FeatureConfigManager { get; internal set; }
@@ -31,6 +30,8 @@ namespace XIFramework.GameFramework
         public async UniTask Initialize()
         {
             await InitializeLevels();
+
+            WorldContainer = Context.WorldContainer.CreateChildContainer();
             
             WorldContainer.Register(this);
         
@@ -86,13 +87,21 @@ namespace XIFramework.GameFramework
         {
             var gameModeType = Context.Settings?.GameModeType ?? 
                                Context.GameInstance.Configuration.DefaultGameMode;
+            
+            // ✅ 确保 GameMode 类型已注册
+            // if (!WorldContainer.IsRegistered(gameModeType))
+            // {
+            //     WorldContainer.Register(gameModeType, gameModeType);
+            // }
+            
+            GameState = WorldContainer.Resolve<XIGameState>();
+            GameState.Initialize(this);
         
             GameMode = (XIGameMode)WorldContainer.Resolve(gameModeType);
             GameMode.Initialize(this);
         
             // 创建GameState
-            GameState = WorldContainer.Resolve<XIGameState>();
-            GameState.Initialize(this);
+
         }
         
         

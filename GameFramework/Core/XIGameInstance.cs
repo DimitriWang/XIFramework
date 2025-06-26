@@ -173,15 +173,4 @@ namespace XIFramework.GameFramework
             return GetActiveGameMode() as T;
         }
     }
-
-    public class DefaultGameInstance : XIGameInstance
-    {
-        
-    }
-
-    //测试GameInstance类
-    public class TestGameInstance : XIGameInstance
-    {
-        
-    }
 }
