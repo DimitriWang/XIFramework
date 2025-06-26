@@ -1,4 +1,5 @@
-﻿using XIFramework.GameFramework;
+﻿using Unity.Collections;
+using XIFramework.GameFramework;
 
 namespace XIFramework.GameLaunch
 {
@@ -10,9 +11,24 @@ using Cysharp.Threading.Tasks;
 public class GameEngine : MonoBehaviour
 {
     [SerializeField] private GameInstanceConfiguration _gameInstanceConfig;
-    [SerializeField] private System.Type _gameInstanceType = typeof(XIGameInstance);
+
+
+    [ReadOnly]
+    [SerializeField] private XIGameInstance _activeGameInstance;
+    // 全局访问点
+    public static GameEngine Instance { get; private set; }
     
-    private XIGameInstance _activeGameInstance;
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
     
     private async void Start()
     {
@@ -23,7 +39,9 @@ public class GameEngine : MonoBehaviour
     {
         // 创建GameInstance
         var go = new GameObject("GameInstance");
-        _activeGameInstance = (XIGameInstance)go.AddComponent(_gameInstanceType);
+        var gameInstanceType =
+            _gameInstanceConfig?.OverrideGameInstanceType ?? _gameInstanceConfig.DefaultGameInstanceType;
+        _activeGameInstance = (XIGameInstance)go.AddComponent(gameInstanceType);
         
         // 应用配置
         if (_gameInstanceConfig != null)
@@ -31,45 +49,40 @@ public class GameEngine : MonoBehaviour
             _activeGameInstance.SetConfiguration(_gameInstanceConfig);
         }
         
-        // 初始化主世界
+        // 初始化主世界 - 使用配置中的默认设置
         await InitializeMainWorld();
     }
     
     private async UniTask InitializeMainWorld()
     {
-        // 创建主世界上下文
-        var mainWorldSettings = new XIWorldSettings()
+        if (_activeGameInstance.Configuration.defaultWorldSettings == null)
         {
-            SceneName = "GameLaunch",
-            gameModeType = typeof(GameLaunch),
-            isPersistent = true
-        };
-
-#if UNITY_EDITOR
-        await _activeGameInstance.InitializeWorldContext("EditorPlayWorldContext", mainWorldSettings);
-#else
-        await _activeGameInstance.InitializeWorldContext("RuntimePlayWorldContext", mainWorldSettings);
-#endif
-
-    }
-    
-    public async UniTask SwitchToGameWorld(string worldName, XIWorldSettings settings)
-    {
-        if (_activeGameInstance == null)
-        {
-            Debug.LogError("GameInstance not initialized");
+            Debug.LogError("Default world settings not configured!");
             return;
         }
         
-        var contextName = $"GameContext_{worldName}";
+        var mainWorldSettings = _activeGameInstance.Configuration.defaultWorldSettings;
         
-        if (_activeGameInstance.GetWorldContext(contextName) != null)
-        {
-            await _activeGameInstance.InitializeWorldContext(contextName, settings);
-        }
-        
-        await _activeGameInstance.SetActiveWorldContext(contextName);
+        // 统一使用"MainWorldContext"名称
+        await _activeGameInstance.InitializeWorldContext("MainWorldContext", mainWorldSettings);
+        await _activeGameInstance.SetActiveWorldContext("MainWorldContext");
+
+// #if UNITY_EDITOR
+//         await _activeGameInstance.InitializeWorldContext("EditorPlayWorldContext", mainWorldSettings);
+// #else
+//         await _activeGameInstance.InitializeWorldContext("RuntimePlayWorldContext", mainWorldSettings);
+// #endif
+
     }
+
+
+    // 新增：获取当前游戏实例
+    public XIGameInstance GetGameInstance() => _activeGameInstance;
+
+    // 新增：直接获取活动世界上下文
+    public XIWorldContext GetActiveWorldContext() =>
+        _activeGameInstance?.ActiveWorldContext;
+
 }
 
 public class GameLaunch : XIGameMode

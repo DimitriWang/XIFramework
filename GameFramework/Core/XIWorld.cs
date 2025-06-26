@@ -24,15 +24,22 @@ namespace XIFramework.GameFramework
     
         public bool IsRunning { get; private set; }
         
+        public string ActivePersistentLevel { get; private set; }
+        public List<string> LoadedSubLevels { get; } = new List<string>();
+        private List<string> _pendingSubLevels = new List<string>();
+        
         public async UniTask Initialize()
         {
-            
+            await InitializeLevels();
             
             WorldContainer.Register(this);
         
             // 创建特性管理器
             FeatureManager = new XIGameFeatureManager(this);
             WorldContainer.Register(FeatureManager);
+            
+            CreateGameMode();
+            
             // 加载世界特性
             await LoadWorldFeatures();
             // 加载场景
@@ -68,7 +75,7 @@ namespace XIFramework.GameFramework
             }
         
             // 加载场景特定配置
-            var sceneConfig = Resources.Load<WorldFeatureConfig>($"Features/{Context.Settings.SceneName}");
+            var sceneConfig = Resources.Load<WorldFeatureConfig>($"Features/{Context.Settings.PersistentLevel}");
             if (sceneConfig != null)
             {
                 sceneConfig.ApplyConfig(this);
@@ -77,7 +84,7 @@ namespace XIFramework.GameFramework
         
         public void CreateGameMode()
         {
-            var gameModeType = Context.Settings?.gameModeType ?? 
+            var gameModeType = Context.Settings?.GameModeType ?? 
                                Context.GameInstance.Configuration.DefaultGameMode;
         
             GameMode = (XIGameMode)WorldContainer.Resolve(gameModeType);
@@ -86,6 +93,59 @@ namespace XIFramework.GameFramework
             // 创建GameState
             GameState = WorldContainer.Resolve<XIGameState>();
             GameState.Initialize(this);
+        }
+        
+        
+        public async UniTask LoadPersistentLevel(string levelName)
+        {
+            if (ActivePersistentLevel == levelName) return;
+        
+            // 卸载当前主关卡
+            if (!string.IsNullOrEmpty(ActivePersistentLevel))
+            {
+                await UnloadLevel(ActivePersistentLevel);
+            }
+        
+            Debug.Log($"Loading persistent level: {levelName}");
+            // TODO : 
+            // 实际加载逻辑（使用Addressables/SceneManager）
+            await UniTask.Delay(300); // 模拟加载
+            ActivePersistentLevel = levelName;
+        }
+        
+        
+        public async UniTask LoadSubLevel(string levelName)
+        {
+            if (LoadedSubLevels.Contains(levelName)) return;
+        
+            Debug.Log($"Loading sub-level: {levelName}");
+            // 实际加载逻辑 TODO: 
+            await UniTask.Delay(200);
+            LoadedSubLevels.Add(levelName);
+        }
+    
+        public async UniTask UnloadLevel(string levelName)
+        {
+            Debug.Log($"Unloading level: {levelName}");
+            // 实际卸载逻辑 TODO: 
+            await UniTask.Delay(150);
+            LoadedSubLevels.Remove(levelName);
+            if (ActivePersistentLevel == levelName) ActivePersistentLevel = null;
+        }
+    
+        // 初始化时加载关卡
+        public async UniTask InitializeLevels()
+        {
+            if (Context.Settings == null) return;
+        
+            // 加载主关卡
+            await LoadPersistentLevel(Context.Settings.PersistentLevel);
+        
+            // 加载初始子关卡
+            foreach (var subLevel in Context.Settings.SubLevels)
+            {
+                await LoadSubLevel(subLevel);
+            }
         }
         
         public void Update(float deltaTime)

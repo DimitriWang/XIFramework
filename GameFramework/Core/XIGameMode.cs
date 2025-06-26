@@ -16,6 +16,12 @@ namespace XIFramework.GameFramework
         public XIPlayerController[] Players { get; protected set; }
         protected Type DefaultPlayerControllerType { get; set; } = typeof(XIPlayerController);
         protected Type DefaultPlayerStateType { get; set; } = typeof(XIPlayerState);
+        
+        
+        public event Action<string> OnSubLevelLoaded;
+        public event Action<string> OnSubLevelUnloaded;
+
+
         public virtual void Initialize(XIGameWorld world)
         {
             
@@ -29,6 +35,19 @@ namespace XIFramework.GameFramework
             // 创建初始玩家
             CreateInitialPlayers();
         }
+        
+        public virtual async UniTask LoadSubLevel(string levelName)
+        {
+            await World.LoadSubLevel(levelName);
+            OnSubLevelLoaded?.Invoke(levelName);
+        }
+    
+        public virtual async UniTask UnloadSubLevel(string levelName)
+        {
+            await World.UnloadLevel(levelName);
+            OnSubLevelUnloaded?.Invoke(levelName);
+        }
+
         
         protected virtual void CreateInitialPlayers()
         {

@@ -21,6 +21,12 @@ namespace XIFramework.GameFramework
         public GameInstanceConfiguration Configuration => _configuration;
         public XIWorldContext ActiveWorldContext => _activeWorldContext;
         public IXIFrameworkContainer GlobalContainer => _globalContainer;
+        
+        // 添加世界切换事件
+        public event Action<XIWorldContext> OnWorldContextActivated;
+        public event Action<XIWorldContext> OnWorldContextDeactivated;
+        
+        
         protected virtual void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -97,12 +103,24 @@ namespace XIFramework.GameFramework
 
         public async UniTask SetActiveWorldContext(string contextName)
         {
+            
             if (!_worldContexts.TryGetValue(contextName, out var context)) return;
-            
-            if (_activeWorldContext != null) await _activeWorldContext.Deactivate();
-            
+            if (_activeWorldContext == context) return;
+        
+            // 触发事件
+            OnWorldContextDeactivated?.Invoke(_activeWorldContext);
+        
+            if (_activeWorldContext != null) 
+            {
+                await _activeWorldContext.Deactivate();
+            }
+        
             _activeWorldContext = context;
-            await _activeWorldContext.Activate();
+            
+            await context.Activate();
+        
+            // 触发事件
+            OnWorldContextActivated?.Invoke(context);
         }
         
         protected virtual void Update()

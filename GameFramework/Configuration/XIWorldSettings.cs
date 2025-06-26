@@ -1,21 +1,24 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace XIFramework.GameFramework
 {
     [System.Serializable]
     public class XIWorldSettings
     {
-        public string SceneName = "MainScene";
-        
+        [Header("Level Management")] 
+        public string PersistentLevel = "MainLevels";
+        public List<string> SubLevels = new List<string>();
+
         [Header("Game Mode")]
         [SerializeField]
         [TypeConstraint(typeof(XIGameMode), AllowAbstract = false, IncludeEditorAssemblies = false)]
-        public TypeReference gameModeType;
-        public bool isPersistent;
-        
-        [Header("Game Feature")]
-        public string featureConfigName = "DefaultFeatureConfig";
-        public bool loadAsync = true;
+        public TypeReference GameModeType;
+
+        [Header("Game Feature")] 
+        public string FeatureConfigName = "DefaultFeatureConfig";
+
+        public bool isAsyncLoad = true;
     }
 }
