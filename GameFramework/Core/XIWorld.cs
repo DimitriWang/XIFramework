@@ -16,16 +16,16 @@ namespace XIFramework.GameFramework
         public IXIFrameworkContainer WorldContainer { get; internal set; }
         [Inject]
         public XIFeatureConfigManager FeatureConfigManager { get; internal set; }
-        
         public XIGameMode GameMode { get; private set; }
         public XIGameState GameState { get; private set; }
         public XIGameFeatureManager FeatureManager { get; private set; }
-    
         public bool IsRunning { get; private set; }
-        
         public string ActivePersistentLevel { get; private set; }
+        public bool IsLevelsInitialized { get; private set; }
+        public bool IsGameStarted { get; private set; }
         public List<string> LoadedSubLevels { get; } = new List<string>();
         private List<string> _pendingSubLevels = new List<string>();
+
         
         public async UniTask Initialize()
         {
@@ -85,10 +85,12 @@ namespace XIFramework.GameFramework
         
         public void CreateGameMode()
         {
+            if (GameMode != null) return;
+            
             var gameModeType = Context.Settings?.GameModeType ?? 
                                Context.GameInstance.Configuration.DefaultGameMode;
             
-            // ✅ 确保 GameMode 类型已注册
+            // //✅ 确保 GameMode 类型已注册
             // if (!WorldContainer.IsRegistered(gameModeType))
             // {
             //     WorldContainer.Register(gameModeType, gameModeType);
@@ -96,11 +98,9 @@ namespace XIFramework.GameFramework
             
             GameState = WorldContainer.Resolve<XIGameState>();
             GameState.Initialize(this);
-        
-            GameMode = (XIGameMode)WorldContainer.Resolve(gameModeType);
+            
+            GameMode = WorldContainer.Resolve(gameModeType) as XIGameMode;
             GameMode.Initialize(this);
-        
-            // 创建GameState
 
         }
         
@@ -145,6 +145,8 @@ namespace XIFramework.GameFramework
         // 初始化时加载关卡
         public async UniTask InitializeLevels()
         {
+            if (IsLevelsInitialized) return;
+            
             if (Context.Settings == null) return;
         
             // 加载主关卡
@@ -155,6 +157,16 @@ namespace XIFramework.GameFramework
             {
                 await LoadSubLevel(subLevel);
             }
+
+            IsLevelsInitialized = true;
+        }
+        
+        public void StartGame()
+        {
+            if (IsGameStarted || GameMode == null) return;
+        
+            GameMode.StartGame();
+            IsGameStarted = true;
         }
         
         public void Update(float deltaTime)

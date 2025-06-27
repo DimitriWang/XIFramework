@@ -13,6 +13,8 @@ namespace XIFramework.GameFramework
         [Inject]
         public IXIFrameworkContainer WorldContainer { get; internal set; }
         
+        public bool IsGameStarted { get; private set; }
+        
         public XIPlayerController[] Players { get; protected set; }
         protected Type DefaultPlayerControllerType { get; set; } = typeof(XIPlayerController);
         protected Type DefaultPlayerStateType { get; set; } = typeof(XIPlayerState);
@@ -31,10 +33,13 @@ namespace XIFramework.GameFramework
         }
         public virtual void StartGame()
         {
-            //Debug.Log($"GameMode '{GetType().Name}' started in world '{World.Context.Name}'");
+            if (IsGameStarted) return;
+            
+            Debug.Log($"GameMode '{GetType().Name}' started in world '{World.Context.Name}'");
 
-            // 创建初始玩家
             CreateInitialPlayers();
+            
+            IsGameStarted = true;
         }
         
         public virtual async UniTask LoadSubLevel(string levelName)

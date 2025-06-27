@@ -62,17 +62,10 @@ public class GameEngine : MonoBehaviour
         }
         
         var mainWorldSettings = _activeGameInstance.Configuration.defaultWorldSettings;
-        
-        // 统一使用"MainWorldContext"名称
+
         await _activeGameInstance.InitializeWorldContext("MainWorldContext", mainWorldSettings);
+        
         await _activeGameInstance.SetActiveWorldContext("MainWorldContext");
-
-// #if UNITY_EDITOR
-//         await _activeGameInstance.InitializeWorldContext("EditorPlayWorldContext", mainWorldSettings);
-// #else
-//         await _activeGameInstance.InitializeWorldContext("RuntimePlayWorldContext", mainWorldSettings);
-// #endif
-
     }
 
 

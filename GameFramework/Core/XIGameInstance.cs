@@ -95,32 +95,43 @@ namespace XIFramework.GameFramework
              await context.Initialize();
 
             _worldContexts[contextName] = context;
-            if (_activeWorldContext == null)
-            { 
-                await SetActiveWorldContext(contextName);
-            }
+            
+            // 首次初始化 转移到外部处理
+            // if (_activeWorldContext == null)
+            // { 
+            //     await SetActiveWorldContext(contextName);
+            // }
         }
 
         public async UniTask SetActiveWorldContext(string contextName)
         {
-            
-            if (!_worldContexts.TryGetValue(contextName, out var context)) return;
-            if (_activeWorldContext == context) return;
+            Debug.Log($"[GameInstance] Setting active world context: {contextName}");
+
+            if (!_worldContexts.TryGetValue(contextName, out var context) || 
+                _activeWorldContext == context)
+            {
+                return;
+            }
         
             // 触发事件
-            OnWorldContextDeactivated?.Invoke(_activeWorldContext);
         
             if (_activeWorldContext != null) 
             {
-                await _activeWorldContext.Deactivate();
+                if (_activeWorldContext.State == XIWorldContext.WorldState.Active)
+                {
+                    OnWorldContextDeactivated?.Invoke(_activeWorldContext);
+                    await _activeWorldContext.Deactivate();
+                }
             }
         
             _activeWorldContext = context;
             
-            await context.Activate();
-        
-            // 触发事件
-            OnWorldContextActivated?.Invoke(context);
+            if (context.State == XIWorldContext.WorldState.Initialized)
+            {
+                await context.Activate();
+                OnWorldContextActivated?.Invoke(context);
+            }
+            
         }
         
         protected virtual void Update()

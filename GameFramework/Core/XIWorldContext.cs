@@ -111,41 +111,59 @@ namespace XIFramework.GameFramework
 
         public async UniTask Activate()
         {
-            if (State == WorldState.Active) return;
+            // 确保只从未激活状态激活
+            if (State != WorldState.Initialized && State != WorldState.Inactive)
+            {
+                Debug.LogWarning($"Cannot activate world '{Name}' from state {State}");
+                return;
+            }
             
+            Debug.Log($"[World] {Name} - Activating from state: {State}");
+
+            // 确保关卡系统已初始化
+            if (!GameWorld.IsLevelsInitialized)
+            {
+                await GameWorld.InitializeLevels();
+            }
+
+            if (GameWorld.GameMode == null)
+            {
+                GameWorld.CreateGameMode();
+            }
             
-            Debug.Log($"Activating world: {Name}");
-            
-            await GameWorld.InitializeLevels();
-            
-            GameWorld.CreateGameMode();
-            
-            GameWorld.GameMode.StartGame();
+            if (!GameWorld.GameMode.IsGameStarted)
+            {
+                GameWorld.GameMode.StartGame();
+            }
             
             State = WorldState.Active;
-            // 加载场景
-            // await LoadScene(Settings.sceneName);
-        
-            // 创建GameMode
-            // GameWorld.CreateGameMode();
-        
-            // 开始游戏
-            // GameWorld.StartGame();
         }
     
         public async UniTask Deactivate()
         {
-            if (State != WorldState.Active) return;
-        
-            Debug.Log($"Deactivating world: {Name}");
-            await GameWorld.GameMode.EndGame();
-        
-            // 卸载所有子关卡（保留主关卡）
-            foreach (var level in GameWorld.LoadedSubLevels.ToArray())
+            // 确保只从激活状态停用
+            if (State != WorldState.Active)
             {
-                await GameWorld.UnloadLevel(level);
+                Debug.LogWarning($"Cannot deactivate world '{Name}' from state {State}");
+                return;
             }
             
+            Debug.Log($"[World] {Name} - Deactivating from state: {State}");
+            
+            // 结束游戏模式
+            if (GameWorld.GameMode != null)
+            {
+                await GameWorld.GameMode.EndGame();
+            }
+        
+            if (GameWorld != null)
+            {
+                foreach (var level in GameWorld.LoadedSubLevels.ToArray())
+                {
+                    await GameWorld.UnloadLevel(level);
+                }
+            }
+    
             State = WorldState.Inactive;
         }
 
