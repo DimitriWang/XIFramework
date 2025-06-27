@@ -3,7 +3,7 @@
 namespace XIFramework.GameLaunch
 {
     // 本地玩家控制器
-    public class LocalPlayerController : XIPlayerController
+    public class LocalPlayerController : XIBasePlayerController
     {
         public override void UpdateController(float deltaTime)
         {

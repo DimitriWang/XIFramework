@@ -1,7 +1,7 @@
 ﻿
 namespace XIFramework.GameFramework
 {
-    public class DefaultPlayerController : XIPlayerController
+    public class DefaultPlayerController : XIBasePlayerController
     {
         
     }

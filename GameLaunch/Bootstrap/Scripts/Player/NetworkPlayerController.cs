@@ -3,7 +3,7 @@
 namespace XIFramework.GameLaunch
 {
 // 网络玩家控制器
-    public class NetworkPlayerController : XIPlayerController
+    public class NetworkPlayerController : XIBasePlayerController
     {
         public override void Initialize(XIGameWorld world, int playerId)
         {

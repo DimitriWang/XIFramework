@@ -15,8 +15,8 @@ namespace XIFramework.GameFramework
         
         public bool IsGameStarted { get; private set; }
         
-        public XIPlayerController[] Players { get; protected set; }
-        protected Type DefaultPlayerControllerType { get; set; } = typeof(XIPlayerController);
+        public XIBasePlayerController[] Players { get; protected set; }
+        protected Type DefaultPlayerControllerType { get; set; } = typeof(XIBasePlayerController);
         protected Type DefaultPlayerStateType { get; set; } = typeof(XIPlayerState);
         
         
@@ -58,17 +58,17 @@ namespace XIFramework.GameFramework
         protected virtual void CreateInitialPlayers()
         {
             int playerCount = World.Context.GameInstance.Configuration.maxPlayers;
-            Players = new XIPlayerController[playerCount];
+            Players = new XIBasePlayerController[playerCount];
             for (int i = 0; i < playerCount; i++)
             {
                 Players[i] = CreatePlayer(i);
             }
         }
         
-        public virtual XIPlayerController CreatePlayer(int playerId)
+        public virtual XIBasePlayerController CreatePlayer(int playerId)
         {
             // ✅ 正确：通过容器解析玩家控制器
-            var player = WorldContainer.Resolve(DefaultPlayerControllerType) as XIPlayerController;
+            var player = WorldContainer.Resolve(DefaultPlayerControllerType) as XIBasePlayerController;
             player.Initialize(World, playerId);
     
             // ✅ 正确：通过容器解析玩家状态

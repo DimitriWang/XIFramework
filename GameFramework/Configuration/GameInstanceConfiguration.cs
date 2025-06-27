@@ -34,7 +34,7 @@ namespace XIFramework.GameFramework
 
         [Header("Player")] 
         [SerializeField] 
-        [TypeConstraint(typeof(XIPlayerController), AllowAbstract = false, IncludeEditorAssemblies = false)]
+        [TypeConstraint(typeof(XIBasePlayerController), AllowAbstract = false, IncludeEditorAssemblies = false)]
         public TypeReference defaultPlayerController; 
         
         public System.Type DefaultPlayerController => defaultPlayerController.Type;
@@ -54,7 +54,7 @@ namespace XIFramework.GameFramework
                 _defaultGameMode = typeof(DefaultGameMode);
             }
         
-            if (!typeof(XIPlayerController).IsAssignableFrom(defaultPlayerController))
+            if (!typeof(XIBasePlayerController).IsAssignableFrom(defaultPlayerController))
             {
                 Debug.LogError("defaultPlayerController must be a subclass of PlayerController");
                 defaultPlayerController = typeof(DefaultPlayerController);

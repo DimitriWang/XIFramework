@@ -1,6 +1,11 @@
 ﻿namespace XIFramework.GameFramework
 {
-    public abstract class XIPlayerController
+    public interface IXIPlayerController
+    {
+        
+    }
+    
+    public abstract class XIBasePlayerController : IXIPlayerController
     {
         public XIGameWorld World { get; private set; }
         public int PlayerId { get; private set; }
@@ -24,10 +29,10 @@
             // 清理资源
         }
     }
-
-
-
-
-
-
+    
+    
+    public class XIPlayerController : XIBasePlayerController
+    { 
+        
+    }
 }
