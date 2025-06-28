@@ -54,7 +54,7 @@ namespace XIFramework.GameFramework
         
         private async UniTask LoadWorldFeatures()
         {
-// 加载默认配置
+            // 加载默认配置
             var defaultConfig = await FeatureConfigManager.GetConfigAsync("DefaultFeatureConfig");
             if (defaultConfig != null)
             {
