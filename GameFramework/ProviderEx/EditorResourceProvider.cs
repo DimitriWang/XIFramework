@@ -12,7 +12,10 @@ namespace XIFramework.GameFramework
         {
             if (!_loadedAssets.TryGetValue(assetPath, out var asset))
             {
-                asset = new AssetHandle(Resources.Load<T>(assetPath), (obj) => { });
+                asset = new AssetHandle(Resources.Load<T>(assetPath), (obj) =>
+                {
+                    _loadedAssets.Remove(assetPath);
+                });
                 _loadedAssets.Add(assetPath, asset);
             }
             return asset;
@@ -20,15 +23,31 @@ namespace XIFramework.GameFramework
         public async UniTask<AssetHandle> LoadAssetAsync<T>(string assetPath) where T : Object
         {
             await UniTask.CompletedTask;
-            if (!_loadedAssets.TryGetValue(assetPath, out var asset))
+
+            var assetHandle = GetAsset(assetPath);
+
+            if (assetHandle != null)
             {
-                var asyncOp = Resources.LoadAsync<T>(assetPath);
-                await asyncOp;
-                asset = new AssetHandle(asyncOp.asset, (obj) => { });
-                _loadedAssets.Add(assetPath, asset);
+                return assetHandle;
             }
-            return asset;
+            
+            var asyncOp = Resources.LoadAsync<T>(assetPath);
+            await asyncOp;
+            assetHandle = new AssetHandle(asyncOp.asset, (obj) => { });
+            _loadedAssets.Add(assetPath, assetHandle);
+            
+            return assetHandle;
         }
+
+        public AssetHandle GetAsset(string assetPath)
+        {
+            if (_loadedAssets.TryGetValue(assetPath, out var result))
+            {
+                return result;
+            }
+            return null;
+        }
+        
         public async UniTask ShutdownAsync()
         {
             await UniTask.CompletedTask;

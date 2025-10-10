@@ -15,7 +15,7 @@ namespace XIFramework.GameFramework
 #if UNITY_EDITOR
             _resourceProvider = new EditorResourceProvider();
 #else
-        _resourceProvider = new AddressablesResourceProvider();
+            _resourceProvider = new AddressablesResourceProvider();
 #endif
             await _resourceProvider.InitializeAsync();
         }
