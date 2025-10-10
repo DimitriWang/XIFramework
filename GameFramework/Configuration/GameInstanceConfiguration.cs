@@ -56,7 +56,8 @@ namespace XIFramework.GameFramework
         
             if (!typeof(XIBasePlayerController).IsAssignableFrom(defaultPlayerController))
             {
-                Debug.LogError("defaultPlayerController must be a subclass of PlayerController");
+                
+                Debug.LogError("defaultPlayerController 属性不继承自 XIBasePlayerController 自动变更为 DefaultPlayerController");
                 defaultPlayerController = typeof(DefaultPlayerController);
             }
         }

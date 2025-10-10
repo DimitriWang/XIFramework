@@ -60,7 +60,7 @@
                 _typeCache[cacheKey] = types;
 
                 // 打印调试信息
-                Debug.Log($"Found {types.Count} types for {constraint.BaseType.Name} " +
+                Debug.Log($"- Found {types.Count} types for {constraint.BaseType.Name} " +
                           $"(EditorAssemblies: {constraint.IncludeEditorAssemblies})");
 
                 foreach (var type in types)

@@ -30,7 +30,7 @@ MonoBehaviour:
     _assemblyQualifiedName: XIFramework.GameLaunch.DefaultGameInstance, XIFramework.GameLaunch,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   defaultPlayerController:
-    _assemblyQualifiedName: XIFramework.GameFramework.DefaulePlayerController, XIFramework.GameFramework,
+    _assemblyQualifiedName: XIFramework.GameFramework.DefaultPlayerController, XIFramework.GameFramework,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   maxPlayers: 4
   enableNetworking: 0

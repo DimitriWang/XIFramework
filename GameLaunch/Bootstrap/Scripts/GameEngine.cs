@@ -5,7 +5,7 @@ namespace XIFramework.GameLaunch
 {
 
     using UnityEngine;
-using Cysharp.Threading.Tasks;
+    using Cysharp.Threading.Tasks;
 
 // 游戏引擎入口点
 public class GameEngine : MonoBehaviour
