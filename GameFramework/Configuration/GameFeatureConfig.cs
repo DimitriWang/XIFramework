@@ -6,7 +6,7 @@ namespace XIFramework.GameFramework
 
 
 // GameFeature 配置基类
-    public class XIGameFeatureConfig : ScriptableObject
+    public class XIGameFeatureConfig : ConfigBase
     {
         public string configName = "DefaultFeatureConfig";
         public List<GameFeatureEntry> featureEntries = new();

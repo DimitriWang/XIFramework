@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Label text="动画配置" display-tooltip-when-elided="true" name="AnimationTrackMenu" style="-unity-text-align: middle-center; font-size: 15px; background-color: rgb(88, 88, 88); height: 35px; margin-bottom: 2px;" />
+</ui:UXML>

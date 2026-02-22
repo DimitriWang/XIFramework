@@ -120,6 +120,7 @@ namespace XIFramework.GameFramework
 #endif
         public async UniTask ShutdownAsync()
         {
+            await UniTask.CompletedTask;
         }
     }
 }

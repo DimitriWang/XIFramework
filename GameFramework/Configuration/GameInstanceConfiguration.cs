@@ -5,7 +5,7 @@ namespace XIFramework.GameFramework
 {
 // GameInstance配置
     [CreateAssetMenu(fileName = "GameInstanceConfig", menuName = "XIFramework/Game/GameInstance Configuration")]
-    public class GameInstanceConfiguration : ScriptableObject
+    public class GameInstanceConfiguration : ConfigBase
     {
         [Header("Game Mode")] 
         [SerializeField] 

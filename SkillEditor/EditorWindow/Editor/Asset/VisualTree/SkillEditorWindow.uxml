@@ -3,8 +3,34 @@
         <ui:Button text="加载编辑器场景" display-tooltip-when-elided="true" name="LoadEditorSceneButton" style="flex-direction: column; flex-wrap: nowrap; width: 100px; height: auto; justify-content: center; align-items: flex-end; margin-top: 3px; margin-bottom: 3px;" />
         <ui:Button text="回归旧场景" display-tooltip-when-elided="true" name="LoadOldSceneButton" style="flex-direction: column; flex-wrap: nowrap; width: 100px; margin-top: 3px; margin-bottom: 3px;" />
         <ui:Button text="基本信息" display-tooltip-when-elided="true" name="SkillBasicButton" style="flex-direction: column; flex-wrap: nowrap; width: 100px; margin-top: 3px; margin-bottom: 3px;" />
-        <uie:ObjectField label="演示角色预制体" name="PreviewCharacterPrefabObjectField" style="flex-shrink: 1; flex-grow: 1; align-items: center; font-size: 13px; margin-top: 3px; margin-bottom: 3px;" />
-        <uie:ObjectField label="技能配置文件" name="SkillConfigObjectField" style="flex-shrink: 1; flex-grow: 1; align-items: center; margin-left: 15px; font-size: 13px; margin-top: 3px; margin-bottom: 3px;" />
+        <uie:ObjectField label="演示角色预制体" name="PreviewCharacterPrefabObjectField" type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" style="flex-shrink: 1; flex-grow: 1; align-items: center; font-size: 13px; margin-top: 3px; margin-bottom: 3px;" />
+        <uie:ObjectField label="技能配置文件" name="SkillConfigObjectField" type="XIFramework.SkillEditor.SkillConfig, XIFramework.SkillEditor" allow-scene-objects="false" style="flex-shrink: 1; flex-grow: 1; align-items: center; margin-left: 15px; font-size: 13px; margin-top: 3px; margin-bottom: 3px;" />
     </ui:VisualElement>
-    <ui:VisualElement name="Content" text="回归旧场景" style="height: 76px; flex-basis: 45px;" />
+    <ui:VisualElement name="Content" text="回归旧场景" style="height: auto; flex-basis: auto; flex-direction: row; background-color: rgb(32, 32, 32);">
+        <ui:VisualElement name="Left" style="width: 200px; min-width: 200px; border-right-width: 0.5px; border-right-color: rgb(32, 32, 32);">
+            <ui:VisualElement name="Controller" focusable="true" style="height: 30px; background-color: rgb(47, 47, 47); flex-direction: row; align-items: center; border-bottom-color: rgb(0, 0, 0); border-bottom-width: 1px; min-height: 30px;">
+                <ui:VisualElement name="PlayController" style="flex-direction: row; align-items: center;">
+                    <ui:Button text="&lt;" display-tooltip-when-elided="true" name="PreviouFrameButton" style="font-size: 15px; height: 20px;" />
+                    <ui:Button text="▶" display-tooltip-when-elided="true" name="PlayButton" style="font-size: 10px; height: 20px;" />
+                    <ui:Button text="&gt;" display-tooltip-when-elided="true" name="NextFrameButton" style="font-size: 15px; height: 20px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="FrameController" style="flex-direction: row; flex-shrink: 1; justify-content: flex-start; align-items: center; flex-wrap: nowrap; margin-left: 10px;">
+                    <ui:TextField picking-mode="Ignore" name="CurrentFrameTextField" style="width: 35px; height: 20px; font-size: 10px; align-items: center; -unity-text-align: middle-left;" />
+                    <ui:Label text="/" display-tooltip-when-elided="true" style="justify-content: flex-start; align-items: flex-end; font-size: 15px;" />
+                    <ui:TextField picking-mode="Ignore" name="FrameCountTextField" text="3131" style="width: 35px; height: 20px; font-size: 10px; align-items: center; -unity-text-align: middle-left;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement focusable="true" name="TrackMenu" style="height: 100%; background-color: rgb(47, 47, 47); flex-direction: column; min-height: 30px; width: 100%; flex-grow: 1;">
+                <ui:VisualElement name="AddTrackContent" style="height: 30px; min-height: 30px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Right" style="flex-grow: 1; flex-shrink: 1; padding-left: 1px; padding-right: 1px; -unity-text-outline-color: rgb(32, 32, 32);">
+            <ui:VisualElement name="ConfigElement" focusable="true" style="height: 30px; background-color: rgb(47, 47, 47); flex-direction: row; align-items: flex-end; min-height: 30px; border-bottom-width: 1px; border-bottom-color: rgb(0, 0, 0);" />
+            <ui:IMGUIContainer name="TimerShaft" style="height: 30px; min-height: 30px; background-color: rgb(37, 37, 37); margin-bottom: 0; margin-right: 13px;" />
+            <ui:ScrollView name="TrackContentView" mode="VerticalAndHorizontal" horizontal-scroller-visibility="AlwaysVisible" vertical-scroller-visibility="AlwaysVisible" style="background-color: rgb(32, 32, 32);">
+                <ui:VisualElement name="ContentListView" style="min-height: 1000px;" />
+            </ui:ScrollView>
+            <ui:IMGUIContainer name="SelectLine" style="position: absolute; left: 1px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
