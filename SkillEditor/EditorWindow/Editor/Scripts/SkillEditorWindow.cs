@@ -9,6 +9,8 @@ namespace XIFramework.SkillEditor
 {
     public class SkillEditorWindow : EditorWindow
     {
+
+        public static SkillEditorWindow Instance;
         [MenuItem("SkillEditor/SkillEditorWindow")]
         public static void ShowExample()
         {
@@ -20,6 +22,7 @@ namespace XIFramework.SkillEditor
 
         public void CreateGUI()
         {
+            Instance = this;
             root = rootVisualElement;
             
             string uxmlPath = SkillEditorAssistant.FindUXMLPath(this);
@@ -293,7 +296,8 @@ namespace XIFramework.SkillEditor
         {
             float pos = x + contentOffsetPos;
 
-            return Mathf.RoundToInt(pos / skillEditorConfig.frameUnitWidth);
+            return GetFrameIndexByPos(x + contentOffsetPos);
+            //return Mathf.RoundToInt(pos / skillEditorConfig.frameUnitWidth);
         }
 
         private void DrawTimerShaft()
@@ -459,6 +463,11 @@ namespace XIFramework.SkillEditor
         {
             AnimationTrackView animationTrackView = new AnimationTrackView();
             animationTrackView.Init(TrackMenuParent, ContentListView);
+        }
+
+        public int GetFrameIndexByPos(float x)
+        {
+            return Mathf.RoundToInt(x / skillEditorConfig.frameUnitWidth);
         }
 
         #endregion

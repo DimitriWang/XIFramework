@@ -50,7 +50,7 @@ namespace XIFramework.SkillEditor
     public class SkillAnimationEvent : SkillFrameEventBase
     {
         public AnimationClip AnimationClip;
-        public int TransitionTime;
+        public float TransitionTime = 0.25f;
 #if UNITY_EDITOR
         public int DurationFrame;
 #endif
