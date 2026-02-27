@@ -1,65 +1,76 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace XIFramework.GameFramework
 {
-    [AutoCreateSubsystem]
-    public class XIFeatureConfigManager : XIGameInstanceSubsystem, IAsyncInitialization
+    /// <summary>
+    /// Feature配置管理器 - 负责加载和缓存GameFeatureConfig
+    /// </summary>
+    [AutoCreateSubsystem(Priority = 10)]
+    public class XIFeatureConfigManager : GameInstanceSubsystem, IAsyncInitialization
     {
-        private Dictionary<string, XIGameFeatureConfig> _configCache = new();
+        private readonly Dictionary<string, GameFeatureConfig> _configCache = new();
     
+        public override void Initialize()
+        {
+            base.Initialize();
+        }
+        
         public async UniTask InitializeAsync()
         {
-            // 预加载所有配置
             await PreloadAllConfigs();
         }
     
         private async UniTask PreloadAllConfigs()
         {
-            // 实际项目中可能使用Addressables
-            var configs = Resources.LoadAll<XIGameFeatureConfig>("FeatureConfigs");
+            var configs = Resources.LoadAll<GameFeatureConfig>("FeatureConfigs");
         
             foreach (var config in configs)
             {
                 _configCache[config.configName] = config;
-                Debug.Log($"Preloaded feature config: {config.configName}");
+                Debug.Log($"[XIFeatureConfigManager] Preloaded: {config.configName}");
             }
         
-            await UniTask.Delay(100); // 模拟加载时间
+            await UniTask.Yield();
         }
     
-        public XIGameFeatureConfig GetConfig(string configName)
+        public GameFeatureConfig GetConfig(string configName)
         {
             if (_configCache.TryGetValue(configName, out var config))
             {
                 return config;
             }
         
-            Debug.LogWarning($"Feature config '{configName}' not found in cache, loading directly");
-            return Resources.Load<XIGameFeatureConfig>($"FeatureConfigs/{configName}");
+            Debug.LogWarning($"[XIFeatureConfigManager] Config '{configName}' not found in cache, loading directly");
+            return Resources.Load<GameFeatureConfig>($"FeatureConfigs/{configName}");
         }
     
-        public async UniTask<XIGameFeatureConfig> GetConfigAsync(string configName)
+        public async UniTask<GameFeatureConfig> GetConfigAsync(string configName)
         {
             if (_configCache.TryGetValue(configName, out var config))
             {
                 return config;
             }
         
-            // 异步加载配置
-            Debug.Log($"Loading feature config asynchronously: {configName}");
-            var asyncOp = Resources.LoadAsync<XIGameFeatureConfig>($"FeatureConfigs/{configName}");
+            Debug.Log($"[XIFeatureConfigManager] Loading config asynchronously: {configName}");
+            var asyncOp = Resources.LoadAsync<GameFeatureConfig>($"FeatureConfigs/{configName}");
             await asyncOp;
         
-            if (asyncOp.asset is XIGameFeatureConfig loadedConfig)
+            if (asyncOp.asset is GameFeatureConfig loadedConfig)
             {
                 _configCache[configName] = loadedConfig;
                 return loadedConfig;
             }
         
-            Debug.LogError($"Failed to load feature config: {configName}");
+            Debug.LogError($"[XIFeatureConfigManager] Failed to load config: {configName}");
             return null;
+        }
+        
+        public override void Shutdown()
+        {
+            _configCache.Clear();
+            base.Shutdown();
         }
     }
 }

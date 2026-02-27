@@ -1,14 +1,20 @@
-﻿using XIFramework.GameFramework;
+using UnityEngine;
+using XIFramework.GameFramework;
 
 namespace XIFramework.GameLaunch
 {
-    // 本地玩家控制器
-    public class LocalPlayerController : XIBasePlayerController
+    /// <summary>
+    /// 本地玩家控制器
+    /// </summary>
+    public class LocalPlayerController : PlayerController
     {
-        public override void UpdateController(float deltaTime)
+        public bool IsLocalPlayer { get; private set; } = true;
+        
+        protected override void OnInitialize()
         {
-            base.UpdateController(deltaTime);
-            // 处理本地输入
+            base.OnInitialize();
+            // 处理本地输入初始化
+            Debug.Log($"[LocalPlayerController] Local player {PlayerId} ready");
         }
     }
 }

@@ -1,19 +1,27 @@
-﻿using XIFramework.GameFramework;
+using UnityEngine;
+using XIFramework.GameFramework;
 
 namespace XIFramework.GameLaunch
 {
-// 网络玩家控制器
-    public class NetworkPlayerController : XIBasePlayerController
+    /// <summary>
+    /// 网络玩家控制器
+    /// </summary>
+    public class NetworkPlayerController : PlayerController
     {
-        public override void Initialize(XIGameWorld world, int playerId)
+        public bool IsLocalPlayer { get; private set; } = false;
+        
+        protected override void OnInitialize()
         {
-            base.Initialize(world, playerId);
-            IsLocalPlayer = false;
+            base.OnInitialize();
+            Debug.Log($"[NetworkPlayerController] Network player {PlayerId} ready");
         }
-        //
-        // public void ProcessNetworkInput(PlayerInputData inputData)
-        // {
-        //     // 处理网络输入
-        // }
+        
+        /// <summary>
+        /// 处理网络输入数据
+        /// </summary>
+        public virtual void ProcessNetworkInput(byte[] inputData)
+        {
+            // 处理网络输入
+        }
     }
 }

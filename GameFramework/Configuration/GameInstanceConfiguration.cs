@@ -1,46 +1,35 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace XIFramework.GameFramework
 {
 // GameInstance配置
     [CreateAssetMenu(fileName = "GameInstanceConfig", menuName = "XIFramework/Game/GameInstance Configuration")]
-    public class GameInstanceConfiguration : ConfigBase
+    public class GameInstanceConfiguration : ScriptableObject, IGameInstanceConfiguration
     {
         [Header("Game Mode")] 
         [SerializeField] 
-        [TypeConstraint(typeof(XIGameMode), IncludeEditorAssemblies = false)]
+        [TypeConstraint(typeof(GameMode), IncludeEditorAssemblies = false)]
         public TypeReference _defaultGameMode;
         
+        [Header("Basic Settings")]
+        public int maxPlayers = 4;
+        public bool enableDebug = true;
+        
+        public int MaxPlayers => maxPlayers;
         public System.Type DefaultGameMode => _defaultGameMode.Type;
-
-        
+        public IWorldSettings DefaultWorldSettings => defaultWorldSettings;
+        public bool EnableDebug => enableDebug;
         [Header("World Settings")]
-        public XIWorldSettings defaultWorldSettings;
+        public WorldSettings defaultWorldSettings;
         
-        [Header("Core Systems")]
-        [SerializeField]
-        [TypeConstraint(typeof(XIGameInstance), IncludeEditorAssemblies = false)]
-        private TypeReference _defaultGameInstanceType;
-    
-        public System.Type DefaultGameInstanceType => _defaultGameInstanceType.Type;
-    
-        [Space]
-        [SerializeField]
-        [TypeConstraint(typeof(XIGameInstance), AllowAbstract = false, IncludeEditorAssemblies = false)]
-        private TypeReference _overrideGameInstanceType;
-    
-        public System.Type OverrideGameInstanceType => _overrideGameInstanceType.Type;
-
         [Header("Player")] 
         [SerializeField] 
-        [TypeConstraint(typeof(XIBasePlayerController), AllowAbstract = false, IncludeEditorAssemblies = false)]
+        [TypeConstraint(typeof(PlayerController), AllowAbstract = false, IncludeEditorAssemblies = false)]
         public TypeReference defaultPlayerController; 
         
         public System.Type DefaultPlayerController => defaultPlayerController.Type;
         
-        public int maxPlayers = 4;
-    
         [Header("Networking")]
         public bool enableNetworking;
         public string defaultServerAddress = "127.0.0.1";
@@ -48,18 +37,17 @@ namespace XIFramework.GameFramework
     
         private void OnValidate()
         {
-            if (!typeof(XIGameMode).IsAssignableFrom(_defaultGameMode))
-            {
-                Debug.LogError("defaultGameMode 属性 不继承自GameMode 自动变更为DefaultGameMode");
-                _defaultGameMode = typeof(DefaultGameMode);
-            }
+            // if (_defaultGameMode.Type != null && !typeof(GameMode).IsAssignableFrom(_defaultGameMode.Type))
+            // {
+            //     Debug.LogError("defaultGameMode 属性 不继承自GameMode 自动变更为DefaultGameMode");
+            //     _defaultGameMode = new TypeReference(typeof(DefaultGameMode));
+            // }
         
-            if (!typeof(XIBasePlayerController).IsAssignableFrom(defaultPlayerController))
-            {
-                
-                Debug.LogError("defaultPlayerController 属性不继承自 XIBasePlayerController 自动变更为 DefaultPlayerController");
-                defaultPlayerController = typeof(DefaultPlayerController);
-            }
+            // if (defaultPlayerController.Type != null && !typeof(PlayerController).IsAssignableFrom(defaultPlayerController.Type))
+            // {
+            //     Debug.LogError("defaultPlayerController 属性不继承自 PlayerController 自动变更为默认控制器");
+            //     defaultPlayerController = new TypeReference(typeof(PlayerController));
+            // }
         }
     }
 }

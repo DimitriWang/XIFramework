@@ -13,26 +13,23 @@ MonoBehaviour:
   m_Name: DefaultGameInstanceConfig
   m_EditorClassIdentifier: 
   _defaultGameMode:
-    _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameMode, XIFramework.GameFramework,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    _assemblyQualifiedName: 
+  maxPlayers: 4
+  enableDebug: 1
   defaultWorldSettings:
-    PersistentLevel: MainLevels
-    SubLevels: []
-    GameModeType:
-      _assemblyQualifiedName: XIFramework.GameFramework.DefaultGameMode, XIFramework.GameFramework,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    persistentLevel: MainLevels
+    subLevels: []
+    GameModeTypeRef:
+      _assemblyQualifiedName: 
+    PlayerControllerTypeRef:
+      _assemblyQualifiedName: 
+    PlayerStateTypeRef:
+      _assemblyQualifiedName: 
     FeatureConfigName: DefaultFeatureConfig
     isAsyncLoad: 1
-  _defaultGameInstanceType:
-    _assemblyQualifiedName: XIFramework.GameLaunch.DefaultGameInstance, XIFramework.GameLaunch,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  _overrideGameInstanceType:
-    _assemblyQualifiedName: XIFramework.GameLaunch.DefaultGameInstance, XIFramework.GameLaunch,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   defaultPlayerController:
     _assemblyQualifiedName: XIFramework.GameFramework.DefaultPlayerController, XIFramework.GameFramework,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  maxPlayers: 4
   enableNetworking: 0
   defaultServerAddress: 127.0.0.1
   defaultServerPort: 7777
