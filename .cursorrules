@@ -1,0 +1,135 @@
+# XIFramework 设计规则
+
+## 概述
+XIFramework 是一个基于 Unreal Gameplay 框架设计思想的 Unity 游戏开发框架。整个框架分为两个主要层次：
+- **Framework**：核心设计理念与通用工具层，保持稳定不变
+- **GameFramework**：游戏逻辑框架层，遵循 Unreal Gameplay 设计模式
+
+## 架构原则
+
+### 1. 分层架构
+- Framework 层：提供核心 IOC 容器、类型引用、内存管理等基础设施
+- GameFramework 层：实现游戏特定的 GameInstance、WorldContext、GameMode 等概念
+- GameLaunch 层：负责启动流程、场景管理和具体游戏实现
+
+### 2. 依赖关系
+- GameFramework 可以依赖 Framework，但不能反向依赖
+- GameLaunch 可以依赖 GameFramework 和 Framework，但 GameFramework 不能依赖 GameLaunch
+- 避免循环依赖
+
+## GameFramework 核心概念
+
+### GameInstance
+- 代表整个游戏会话的生命周期
+- 使用纯 C# 类而非 MonoBehaviour
+- 由 GameEngine（MonoBehaviour）驱动生命周期
+- 拥有全局 IOC 容器（GlobalContainer）
+- 管理多个 WorldContext 实例
+
+### WorldContext  
+- 代表一个独立的游戏世界上下文
+- 每个 WorldContext 拥有独立的 IOC 子容器（WorldContainer）
+- 支持 per-world 服务隔离（GameState、PlayerState、PlayerController）
+- 管理自己的 GameWorld 实例
+
+### GameWorld
+- 管理具体游戏世界的游戏逻辑
+- 通过 WorldContainer 创建 per-world 的 GameMode、GameState 等服务
+- 负责关卡加载和管理
+
+## IOC 容器设计
+
+### 全局容器（GlobalContainer）
+- 由 GameInstance 持有
+- 注册全局单例服务
+- 用于 GameInstance 级别的依赖注入
+
+### 世界容器（WorldContainer）
+- 由 WorldContext 持有
+- 继承自全局容器
+- 注册 per-world 服务（isSingleton: false）
+- 确保不同世界之间的服务隔离
+
+## 子系统（Subsystem）设计
+
+### 生命周期分类
+- **GameInstance 生命周期**：随 GameInstance 初始化/关闭
+- **World 生命周期**：随 WorldContext 初始化/关闭  
+- **Dynamic 生命周期**：动态创建/销毁
+
+### 自动注册机制
+- 使用 [AutoCreateSubsystem(Priority = 数值)] 特性标记自动创建的子系统
+- 数值越小优先级越高
+- 由 XISubSystemManager 统一管理
+
+### 基类设计
+- **GameInstanceSubsystem**：用于 GameInstance 级别子系统
+- **WorldSubsystem**：用于 World 级别子系统  
+- **DynamicSubsystem**：用于动态管理的子系统
+- 使用 [Inject] 属性注入依赖（GameInstance、WorldContext 等）
+
+## Unreal Gameplay 映射
+
+| Unreal | XIFramework |
+|--------|-------------|
+| UGameInstance | GameInstance |
+| UWorld | GameWorld |
+| AGameModeBase | GameMode |
+| APlayerController | PlayerController |
+| APlayerState | PlayerState |
+| USubsystem | ISubsystem |
+| WorldContext | WorldContext |
+
+## 编码规范
+
+### 命名约定
+- 接口以 'I' 开头（如 IGameInstance）
+- 实现类使用具体名称（如 GameInstance）
+- 抽象基类使用具体名称（如 GameMode）
+
+### 依赖注入
+- 优先使用 [Inject] 属性注入
+- 避免手动设置依赖（如 SetGameInstance）
+- 在容器中注册服务时明确单例/非单例
+
+### 服务注册
+- 全局服务注册到 GlobalContainer
+- per-world 服务注册到 WorldContainer，使用 isSingleton: false
+- 避免在同一容器中重复注册同一类型
+
+## 组件交互
+
+### GameInstanceAssistant
+- 提供全局静态访问入口
+- 用于获取当前 GameInstance、WorldContext、GameMode 等
+- 仅在需要跨模块访问时使用
+
+### 启动流程
+- GameBootstrap 确保 GameEngine 存在
+- GameEngine 作为唯一的 MonoBehaviour 启动器
+- GameEngine 创建 GameInstance 并驱动其生命周期
+- GameInstance 管理 WorldContext 的创建和切换
+
+## 扩展性设计
+
+### 配置系统
+- GameInstanceConfiguration：全局配置
+- WorldSettings：世界特定配置
+- 支持通过 ScriptableObject 配置
+
+### 功能系统
+- Feature 系统支持按需加载
+- 支持同步/异步激活模式
+- 世界级功能自动管理生命周期
+
+## 维护原则
+
+### Framework 层
+- 核心基础设施保持稳定
+- 不随意修改 IOC 容器等核心组件
+- 仅进行必要的 bug 修复
+
+### GameFramework 层  
+- 可根据项目需求迭代优化
+- 遵循 Unreal Gameplay 设计思想
+- 保持良好的扩展性和可维护性
