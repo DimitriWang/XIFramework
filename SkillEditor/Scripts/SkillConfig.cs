@@ -31,7 +31,7 @@ namespace XIFramework.SkillEditor
         /// </summary>
         [NonSerialized, OdinSerialize]
         [DictionaryDrawerSettings(KeyLabel = "帧数", ValueLabel = "动画事件数据")]
-        public Dictionary<int, SkillFrameEventBase> FrameData = new Dictionary<int, SkillFrameEventBase>();
+        public Dictionary<int, SkillAnimationEvent> FrameData = new Dictionary<int, SkillAnimationEvent>();
         
         
     }

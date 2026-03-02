@@ -426,8 +426,11 @@ namespace XIFramework.SkillEditor
         #endregion
 
         #region Config
-
         private SkillConfig skillConfig;
+        public SkillConfig SkillConfig
+        {
+            get => skillConfig;
+        }
         private SkillEditorConfig skillEditorConfig = new SkillEditorConfig();
 
 
