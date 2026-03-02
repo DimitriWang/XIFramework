@@ -1,34 +1,36 @@
-﻿using System.Collections;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
-using XIFramework.GameFramework;
 
 namespace XIFramework.GameLaunch
 {
-    
+    /// <summary>
+    /// 游戏引导器 - 确保GameEngine存在
+    /// 可放在任何场景中，如果GameEngine不存在则自动创建
+    /// </summary>
     public class GameBootstrap : MonoBehaviour
     {
-        private void Start()
+        [SerializeField] private GameEngine _gameEnginePrefab;
+        
+        private void Awake()
         {
-            AsyncStart().Forget();
-        }
-
-        public async UniTask AsyncStart()
-        {
-
-            await UniTask.CompletedTask;
-            // 创建GameInstance
-            //var gameInstance = XIGameInstance.Instance;
-
-            // 添加自定义初始化系统
-            //XIGameFramework.AddPreInitSystem<DatabasePreInitSystem>();
-            // XIGameFramework.AddPostInitSystem<AnalyticsPostInitSystem>();
-
-            // // 初始化框架
-            // await XIGameFramework.Initialize(gameInstance);
-
-            // 框架初始化完成，开始游戏逻辑
-
+            // 如果GameEngine已存在，无需重复创建
+            if (GameEngine.Instance != null)
+            {
+                Debug.Log("[GameBootstrap] GameEngine already exists, skipping");
+                return;
+            }
+            
+            // 创建GameEngine
+            if (_gameEnginePrefab != null)
+            {
+                _gameEnginePrefab = Instantiate(_gameEnginePrefab);
+                Debug.Log("[GameBootstrap] Created GameEngine from prefab");
+            }
+            else
+            {
+                var go = new GameObject("GameEngine");
+                _gameEnginePrefab = go.AddComponent<GameEngine>();
+                Debug.Log("[GameBootstrap] Created default GameEngine");
+            }
         }
     }
 }

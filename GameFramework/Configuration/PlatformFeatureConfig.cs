@@ -1,31 +1,47 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace XIFramework.GameFramework
 {
-// 平台特定配置 - 文件名: PlatformFeatureConfig.cs
-    [CreateAssetMenu(fileName = "PlatformFeatureConfig", menuName = "Game/Feature Configs/Platform Specific")]
-    public class PlatformFeatureConfig : XIGameFeatureConfig
+    /// <summary>
+    /// 平台特性配置
+    /// </summary>
+    [CreateAssetMenu(fileName = "PlatformFeatureConfig", menuName = "GameFramework/Feature Configs/Platform")]
+    public class PlatformFeatureConfig : FeatureConfig
     {
-        public RuntimePlatform targetPlatform;
-    
-        public override void ApplyConfig(XIGameWorld world)
-        {
-            if (Application.platform != targetPlatform) return;
+        [Header("平台特定设置")]
+        public RuntimePlatform TargetPlatform;
+        public bool OverrideDefaultSettings = true;
         
-            foreach (var entry in featureEntries)
+        [Header("性能设置")]
+        public int PlatformTargetFrameRate = 30;
+        public bool EnablePlatformOptimizations = true;
+        
+        [Header("平台功能")]
+        public bool EnableVibration = true;
+        public bool EnableGyroscope = false;
+        
+        public override void ApplyConfig(IGameWorld world)
+        {
+            if (!IsEnabled)
+                return;
+                
+            if (Application.platform != TargetPlatform)
+                return;
+                
+            Debug.Log($"[PlatformFeatureConfig] Applying platform config for {TargetPlatform} to world: {world.Name}");
+            
+            ApplyPlatformSettings();
+        }
+        
+        private void ApplyPlatformSettings()
+        {
+            if (OverrideDefaultSettings)
             {
-                if (!entry.enabled) continue;
-            
-                var feature = Instantiate(entry.feature);
-                feature.Scope = XIGameFeature.FeatureScope.World;
-            
-                foreach (var param in entry.parameters)
-                {
-                    feature.SetParameter(param.key, param.value);
-                }
-            
-                world.FeatureManager.LoadFeature(feature, entry.loadMode);
+                Application.targetFrameRate = PlatformTargetFrameRate;
             }
+            
+            Debug.Log($"[PlatformFeatureConfig] Platform target frame rate: {PlatformTargetFrameRate}");
+            Debug.Log($"[PlatformFeatureConfig] Platform optimizations enabled: {EnablePlatformOptimizations}");
         }
     }
 }

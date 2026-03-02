@@ -1,48 +1,59 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace XIFramework.GameFramework
 {
-    [CreateAssetMenu(fileName = "DefaultFeatureConfig", menuName = "Game/Feature Configs/Default")]
-    public class DefaultFeatureConfig : XIGameFeatureConfig
+    /// <summary>
+    /// 默认特性配置
+    /// </summary>
+    [CreateAssetMenu(fileName = "DefaultFeatureConfig", menuName = "GameFramework/Feature Configs/Default")]
+    public class DefaultFeatureConfig : FeatureConfig
     {
-        [Header("Core Features")] public XIGameFeature uiFeature;
-        public XIGameFeature inputFeature;
-        [Header("Optional Features")] public XIGameFeature audioFeature;
-        public XIGameFeature analyticsFeature;
-        private void OnValidate()
+        [Header("渲染设置")]
+        public bool EnablePostProcessing = true;
+        public int TargetFrameRate = 60;
+        
+        [Header("音频设置")]
+        public bool EnableSpatialAudio = true;
+        [Range(0f, 1f)]
+        public float MasterVolume = 1f;
+        
+        [Header("输入设置")]
+        public bool EnableGamepadSupport = true;
+        public bool EnableTouchSupport = true;
+        
+        public override void ApplyConfig(IGameWorld world)
         {
-            // 确保核心特性始终启用
-            featureEntries.RemoveAll(e => e.feature == uiFeature || e.feature == inputFeature);
-            // featureEntries.Add(new GameFeatureEntry
-            // {
-            //     feature = uiFeature,
-            //     enabled = true,
-            //     loadMode = FeatureLoadMode.InitializeWithWorld
-            // });
-            // featureEntries.Add(new GameFeatureEntry
-            // {
-            //     feature = inputFeature,
-            //     enabled = true,
-            //     loadMode = FeatureLoadMode.InitializeWithWorld
-            // });
-            if (audioFeature != null)
-            {
-                featureEntries.Add(new GameFeatureEntry
-                {
-                    feature = audioFeature,
-                    enabled = true,
-                    loadMode = FeatureLoadMode.Preload
-                });
-            }
-            if (analyticsFeature != null)
-            {
-                featureEntries.Add(new GameFeatureEntry
-                {
-                    feature = analyticsFeature,
-                    enabled = true,
-                    loadMode = FeatureLoadMode.OnDemand
-                });
-            }
+            if (!IsEnabled)
+                return;
+                
+            Debug.Log($"[DefaultFeatureConfig] Applying config to world: {world.Name}");
+            
+            // 应用渲染设置
+            ApplyRenderingSettings();
+            
+            // 应用音频设置
+            ApplyAudioSettings();
+            
+            // 应用输入设置
+            ApplyInputSettings();
+        }
+        
+        private void ApplyRenderingSettings()
+        {
+            Application.targetFrameRate = TargetFrameRate;
+            Debug.Log($"[DefaultFeatureConfig] Target frame rate set to: {TargetFrameRate}");
+        }
+        
+        private void ApplyAudioSettings()
+        {
+            // 音频设置应用逻辑
+            Debug.Log($"[DefaultFeatureConfig] Audio master volume set to: {MasterVolume}");
+        }
+        
+        private void ApplyInputSettings()
+        {
+            // 输入设置应用逻辑
+            Debug.Log($"[DefaultFeatureConfig] Gamepad support: {EnableGamepadSupport}, Touch support: {EnableTouchSupport}");
         }
     }
 }

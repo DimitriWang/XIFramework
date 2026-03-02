@@ -9,31 +9,31 @@ namespace XIFramework.GameFramework
     {
         public class FeatureLoadRecord
         {
-            public XIGameFeatureConfig.FeatureLoadMode loadMode;
+            public GameFeatureConfig.FeatureLoadMode loadMode;
             public bool isLoaded;
         }
         
-        private readonly Dictionary<XIGameFeature, FeatureLoadRecord> _features = new();
-        private readonly List<XIGameFeature> _activeFeatures = new();
-        private XIGameWorld World { get; set; }
-        public XIGameFeatureManager(XIGameWorld world)
+        private readonly Dictionary<GameFeature, FeatureLoadRecord> _features = new();
+        private readonly List<GameFeature> _activeFeatures = new();
+        private GameWorld World { get; set; }
+        public XIGameFeatureManager(GameWorld world)
         {
             World = world;
         }
         public XIGameFeatureManager() { }
-        public void LoadFeature(XIGameFeature feature, XIGameFeatureConfig.FeatureLoadMode loadMode)
+        public void LoadFeature(GameFeature feature, GameFeatureConfig.FeatureLoadMode loadMode)
         {
             if (feature == null) return;
         
             if (!_features.ContainsKey(feature))
             {
-                feature.Initialize();
+                feature.Initialize(World);
                 _features[feature] = new FeatureLoadRecord {
                     loadMode = loadMode,
                     isLoaded = false
                 };
             
-                if (loadMode == XIGameFeatureConfig.FeatureLoadMode.Preload)
+                if (loadMode == GameFeatureConfig.FeatureLoadMode.Preload)
                 {
                     ActivateFeature(feature);
                 }
@@ -44,7 +44,7 @@ namespace XIFramework.GameFramework
             // 查找按需加载的特性
             var featureEntry = _features.FirstOrDefault(f => 
                 f.Key.name == featureName && 
-                f.Value.loadMode == XIGameFeatureConfig.FeatureLoadMode.OnDemand);
+                f.Value.loadMode == GameFeatureConfig.FeatureLoadMode.OnDemand);
             if (featureEntry.Key != null)
             {
                 await ActivateFeatureAsync(featureEntry.Key);
@@ -58,13 +58,13 @@ namespace XIFramework.GameFramework
         {
             foreach (var featureEntry in _features)
             {
-                if (featureEntry.Value.loadMode == XIGameFeatureConfig.FeatureLoadMode.InitializeWithWorld)
+                if (featureEntry.Value.loadMode == GameFeatureConfig.FeatureLoadMode.InitializeWithWorld)
                 {
                     ActivateFeature(featureEntry.Key);
                 }
             }
         }
-        private void ActivateFeature(XIGameFeature feature)
+        private void ActivateFeature(GameFeature feature)
         {
             if (!_features.TryGetValue(feature, out var record) || record.isLoaded) 
                 return;
@@ -73,7 +73,7 @@ namespace XIFramework.GameFramework
             record.isLoaded = true;
             _activeFeatures.Add(feature);
         }
-        private async UniTask ActivateFeatureAsync(XIGameFeature feature)
+        private async UniTask ActivateFeatureAsync(GameFeature feature)
         {
             if (!_features.TryGetValue(feature, out var record) || record.isLoaded) 
                 return;
@@ -94,13 +94,13 @@ namespace XIFramework.GameFramework
         {
             foreach (var feature in _activeFeatures.ToList())
             {
-                if (feature.Scope == XIGameFeature.FeatureScope.World)
+                if (feature.Scope == GameFeature.FeatureScope.World)
                 {
                     DeactivateFeature(feature);
                 }
             }
         }
-        private void DeactivateFeature(XIGameFeature feature)
+        private void DeactivateFeature(GameFeature feature)
         {
             feature.Deactivate();
             _activeFeatures.Remove(feature);
@@ -127,7 +127,7 @@ namespace XIFramework.GameFramework
             _features.Clear();
         }
         
-        public T GetFeature<T>() where T : XIGameFeature
+        public T GetFeature<T>() where T : GameFeature
         {
             return _features.Keys.OfType<T>().FirstOrDefault();
         }

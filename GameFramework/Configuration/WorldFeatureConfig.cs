@@ -1,29 +1,46 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace XIFramework.GameFramework
 {
-// 世界特定配置
-    [CreateAssetMenu(fileName = "WorldFeatureConfig", menuName = "Game/Feature Configs/World Specific")]
-    public class WorldFeatureConfig : XIGameFeatureConfig
+    /// <summary>
+    /// 世界特性配置
+    /// </summary>
+    [CreateAssetMenu(fileName = "WorldFeatureConfig", menuName = "GameFramework/Feature Configs/World")]
+    public class WorldFeatureConfig : FeatureConfig
     {
-        public string targetWorldName;
-        [Header("World Specific Features")] public XIGameFeature worldPhysicsFeature;
-        public XIGameFeature aiSystemFeature;
-        public override void ApplyConfig(XIGameWorld world)
+        [Header("世界特定设置")]
+        public string TargetWorldName;
+        public bool ApplyToWorldChildren = false;
+        
+        [Header("世界功能")]
+        public bool EnablePhysics = true;
+        public bool EnableAI = true;
+        public bool EnableNetworking = false;
+        
+        [Header("性能调整")]
+        public float WorldTimeScale = 1.0f;
+        public int MaxActiveActors = 100;
+        
+        public override void ApplyConfig(IGameWorld world)
         {
-            // 只应用于目标世界
-            if (world.Context.Name != targetWorldName) return;
-            base.ApplyConfig(world);
-            if (worldPhysicsFeature != null)
-            {
-                var feature = Instantiate(worldPhysicsFeature);
-                world.FeatureManager.LoadFeature(feature, FeatureLoadMode.InitializeWithWorld);
-            }
-            if (aiSystemFeature != null)
-            {
-                var feature = Instantiate(aiSystemFeature);
-                world.FeatureManager.LoadFeature(feature, FeatureLoadMode.InitializeWithWorld);
-            }
+            if (!IsEnabled)
+                return;
+                
+            if (world.Name != TargetWorldName && !ApplyToWorldChildren)
+                return;
+                
+            Debug.Log($"[WorldFeatureConfig] Applying world config to: {world.Name}");
+            
+            ApplyWorldSettings(world);
+        }
+        
+        private void ApplyWorldSettings(IGameWorld world)
+        {
+            // 时间缩放设置
+            // Time.timeScale = WorldTimeScale;
+            
+            Debug.Log($"[WorldFeatureConfig] World time scale: {WorldTimeScale}");
+            Debug.Log($"[WorldFeatureConfig] Physics enabled: {EnablePhysics}, AI enabled: {EnableAI}");
         }
     }
 }

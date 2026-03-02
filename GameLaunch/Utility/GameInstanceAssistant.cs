@@ -1,26 +1,46 @@
-﻿using XIFramework.GameLaunch;
+using XIFramework.GameLaunch;
 
 namespace XIFramework.GameFramework.Utility
 {
+    /// <summary>
+    /// GameInstance便捷访问助手 - 提供全局静态访问入口
+    /// </summary>
     public static class GameInstanceAssistant
     {
-        public static XIGameInstance GameInstance => 
-            GameEngine.Instance?.GetGameInstance();
+        /// <summary>
+        /// 获取当前GameInstance
+        /// </summary>
+        public static IGameInstance GameInstance => 
+            GameEngine.Instance?.GameInstance;
     
-        // 获取活动世界上下文
-        public static XIWorldContext ActiveWorldContext => 
+        /// <summary>
+        /// 获取活动世界上下文
+        /// </summary>
+        public static IWorldContext ActiveWorldContext => 
             GameEngine.Instance?.GetActiveWorldContext();
     
-        // 获取活动游戏模式
-        public static XIGameMode ActiveGameMode => 
+        /// <summary>
+        /// 获取活动游戏模式
+        /// </summary>
+        public static IGameMode ActiveGameMode => 
             ActiveWorldContext?.GameWorld?.GameMode;
+        
+        /// <summary>
+        /// 获取活动游戏世界
+        /// </summary>
+        public static IGameWorld ActiveGameWorld =>
+            ActiveWorldContext?.GameWorld;
     
-        // 快速获取子系统 (全局)
-        public static T GetGlobalSubsystem<T>() where T : XIGameInstanceSubsystem => 
+        /// <summary>
+        /// 快速获取GameInstance级子系统
+        /// </summary>
+        public static T GetGlobalSubsystem<T>() where T : class, ISubsystem => 
             GameInstance?.GetSubsystem<T>();
     
-        // 快速获取子系统 (世界)
-        public static T GetWorldSubsystem<T>() where T : XIWorldSubsystem => 
+        /// <summary>
+        /// 快速获取World级子系统
+        /// </summary>
+        public static T GetWorldSubsystem<T>() where T : class, ISubsystem =>
             ActiveWorldContext?.GetSubsystem<T>();
     }
 }

@@ -1,21 +1,20 @@
-﻿using XIFramework.GameFramework;
+using UnityEngine;
+using XIFramework.GameFramework;
 
 namespace XIFramework.GameLaunch
 {
-
-    // 默认 单机游戏GameMode
-    public class XISingleplayerGameMode : XIGameMode
+    /// <summary>
+    /// 单机游戏GameMode - 只创建一个本地玩家
+    /// </summary>
+    public class XISingleplayerGameMode : GameMode
     {
-        public override void Initialize(XIGameWorld world)
-        {
-            base.Initialize(world);
-            DefaultPlayerControllerType = typeof(LocalPlayerController);
-        }
-    
         protected override void CreateInitialPlayers()
         {
-            // 只创建一个本地玩家
+            // 单机模式只创建一个本地玩家
+            Players = new IPlayerController[1];
             Players[0] = CreatePlayer(0);
+            
+            Debug.Log("[XISingleplayerGameMode] Created local player");
         }
     }
 }
