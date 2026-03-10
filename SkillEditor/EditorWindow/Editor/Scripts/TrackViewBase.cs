@@ -8,6 +8,8 @@ namespace XIFramework.SkillEditor
 {
     public abstract class TrackViewBase
     {
+        protected float frameWidth;
+        
         protected VisualElement menuParent;
         protected VisualElement trackParent;
 
@@ -19,15 +21,26 @@ namespace XIFramework.SkillEditor
         public abstract string TrackAssetPath { get; }
         
         //
-        public virtual void Init(VisualElement menuParent, VisualElement trackParent)
+        public virtual void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
+            this.frameWidth = frameWidth;
             this.menuParent = menuParent;
             this.trackParent = trackParent;
             menu = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(MenuAssetPath).Instantiate().Query().ToList()[1];
             menuParent.Add(menu);
             track = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(TrackAssetPath).Instantiate().Query().ToList()[1];
             trackParent.Add(track);
+            
+        }
 
+        public virtual void RefreshView()
+        {
+            RefreshView(frameWidth);
+        }
+
+        public virtual void RefreshView(float frameWidth)
+        {
+            this.frameWidth = frameWidth;
         }
     } 
 }

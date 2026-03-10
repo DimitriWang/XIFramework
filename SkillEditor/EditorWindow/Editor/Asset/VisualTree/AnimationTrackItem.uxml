@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="AnimationClipTrackView" style="height: 100%; width: 200px; flex-direction: row; min-width: 200px; position: absolute;">
+        <ui:VisualElement name="left_line" picking-mode="Ignore" style="height: 100%; width: 2px; background-color: rgb(138, 255, 102); min-width: 2px;" />
+        <ui:Label text="AnimationClip" display-tooltip-when-elided="true" name="clip_name" picking-mode="Ignore" style="flex-direction: row; height: 100%; width: 200px; font-size: 15px; -unity-text-align: middle-center; background-color: rgba(99, 217, 231, 0.5); white-space: normal; flex-shrink: 1;" />
+        <ui:VisualElement name="right_line" picking-mode="Ignore" style="height: 100%; width: 2px; background-color: rgb(138, 255, 102); min-width: 2px;" />
+        <ui:VisualElement name="main" picking-mode="Ignore" style="flex-shrink: 0; width: 100%; position: absolute; height: 100%;" />
+    </ui:VisualElement>
+</ui:UXML>

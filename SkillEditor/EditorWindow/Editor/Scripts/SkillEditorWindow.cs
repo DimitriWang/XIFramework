@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -180,9 +181,11 @@ namespace XIFramework.SkillEditor
         private void SkillConfigObjectFieldChanged(ChangeEvent<Object> evt)
         {
             skillConfig = evt.newValue as SkillConfig;
-
+            ResetTrack();
+            if (skillConfig == null) return;
             CurrentFrameCount = skillConfig.FrameCount;
-            //TODO: 重新绘制轨道
+            CurrentSelectFrameIndex = 0;
+            //刷新轨道
         }
 
         #endregion
@@ -434,7 +437,7 @@ namespace XIFramework.SkillEditor
         private SkillEditorConfig skillEditorConfig = new SkillEditorConfig();
 
 
-        private void SaveConfig()
+        public void SaveConfig()
         {
             if (skillConfig != null)
             {
@@ -449,12 +452,28 @@ namespace XIFramework.SkillEditor
         private VisualElement ContentListView;
 
         private VisualElement TrackMenuParent;
+
+        private List<TrackViewBase> trackList = new List<TrackViewBase>();
         private void InitContent()
         {
             ContentListView = TrackContentView.Q<VisualElement>(nameof(ContentListView));
             TrackMenuParent = root.Q<VisualElement>("TrackMenu");
             UpdatContentSize();
+            InitTrack();
+        }
+
+        private void InitTrack()
+        {
             InitAnimationTrack();
+        }
+
+        private void ResetTrack()
+        {
+            for (int i = 0; i < trackList.Count; i++)
+            {
+                var iterTrack = trackList[i];
+                iterTrack.RefreshView(skillEditorConfig.frameUnitWidth);
+            }
         }
         
         private void UpdatContentSize()
@@ -465,7 +484,8 @@ namespace XIFramework.SkillEditor
         private void InitAnimationTrack()
         {
             AnimationTrackView animationTrackView = new AnimationTrackView();
-            animationTrackView.Init(TrackMenuParent, ContentListView);
+            animationTrackView.Init(TrackMenuParent, ContentListView, skillEditorConfig.frameUnitWidth);
+            trackList.Add(animationTrackView);
         }
 
         public int GetFrameIndexByPos(float x)
@@ -478,6 +498,8 @@ namespace XIFramework.SkillEditor
 
     public class SkillEditorConfig
     {
+        public SkillEditorConfig() { }
+        
         public const int standFrameUnitWidth = 10; //帧单位宽度
         public const int maxFrameWidthLv = 10;
         public int frameUnitWidth = 10;

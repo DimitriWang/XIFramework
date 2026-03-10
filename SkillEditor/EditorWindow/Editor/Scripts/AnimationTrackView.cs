@@ -10,13 +10,41 @@ public class AnimationTrackView : TrackViewBase
     public override string MenuAssetPath => "Assets/XIFramework/SkillEditor/EditorWindow/Editor/Asset/VisualTree/AnimationTrackMenu.uxml";
     public override string TrackAssetPath => "Assets/XIFramework/SkillEditor/EditorWindow/Editor/Asset/VisualTree/AnimationTrackContent.uxml";
 
+    private Dictionary<int, AnimationTrackItem> trackItemDic = new Dictionary<int, AnimationTrackItem>();
 
-    public override void Init(VisualElement menuParent, VisualElement trackParent)
+    public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
     {
-        base.Init(menuParent, trackParent);
+        base.Init(menuParent, trackParent, frameWidth);
         track.RegisterCallback<DragUpdatedEvent>(OnDragUpdate);
         track.RegisterCallback<DragExitedEvent>(OnDragExited);
+        
+        RefreshView();
     }
+
+    public override void RefreshView(float frameWidth)
+    {
+        base.RefreshView(frameWidth);
+        //销毁当前已有
+        foreach (var iterItem in trackItemDic)
+        {
+            track.Remove(iterItem.Value.Root);
+        }
+        trackItemDic.Clear();
+
+        if (SkillEditorWindow.Instance.SkillConfig == null) return;
+        if (SkillEditorWindow.Instance.SkillConfig.SkillAnimationData == null) return;
+        
+        //根据数据绘制TrackItem
+        foreach (var iterItem in SkillEditorWindow.Instance.SkillConfig.SkillAnimationData.FrameData)
+        {
+            AnimationTrackItem trackItem = new AnimationTrackItem();
+            trackItem.Init(this, track, iterItem.Key, frameWidth, iterItem.Value);
+            trackItemDic.Add(iterItem.Key ,trackItem);
+        }
+
+    }
+
+    #region 拖拽资源
 
     private void OnDragUpdate(DragUpdatedEvent evt)
     {
@@ -29,6 +57,8 @@ public class AnimationTrackView : TrackViewBase
             DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
         }
     }
+    
+    #endregion
     
     private void OnDragExited(DragExitedEvent evt)
     {
@@ -90,6 +120,18 @@ public class AnimationTrackView : TrackViewBase
                 {
                     durationFrame = clipFrameCount;
                 }
+                //构建动画数据
+                SkillAnimationEvent animationEvent = new SkillAnimationEvent()
+                {
+                    AnimationClip = clip,
+                    DurationFrame = durationFrame,
+                    TransitionTime = 0.25f,
+                };
+                //新增的动画数据
+                SkillEditorWindow.Instance.SkillConfig.SkillAnimationData.FrameData.Add(selectFrameIndex, animationEvent);
+                SkillEditorWindow.Instance.SaveConfig();
+                
+                //TODO同步修改编辑器视图
             }
             
             Debug.Log(canPlace);
