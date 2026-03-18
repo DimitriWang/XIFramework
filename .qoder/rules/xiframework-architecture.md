@@ -1,5 +1,5 @@
 ---
-type: always_on
+trigger: always_on
 ---
 
 # XIFramework 设计规则
