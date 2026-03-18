@@ -1,3 +1,8 @@
+---
+name: create-subsystem
+description: 快速创建符合 XIFramework 规范的子系统（Subsystem）类文件。
+---
+
 # Create XIFramework Subsystem
 
 ## Description

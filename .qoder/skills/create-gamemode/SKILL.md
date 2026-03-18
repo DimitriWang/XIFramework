@@ -1,3 +1,8 @@
+---
+name: create-gamemode
+description: 快速创建符合 XIFramework 规范的 GameMode 类文件。
+---
+
 # Create XIFramework GameMode
 
 ## Description
